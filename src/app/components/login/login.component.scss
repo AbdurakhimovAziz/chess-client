@@ -1,0 +1,45 @@
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-image: url("../../../assets/images/login-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  &__title {
+    font-size: 40px;
+    color: #000;
+    margin-bottom: 35px;
+  }
+  &__card {
+    max-width: 400px;
+    margin: 2em auto;
+    text-align: center;
+    padding: 60px 80px;
+    background: rgba($color: #fff, $alpha: 0.8);
+    border-radius: 10px;
+  }
+  &__input {
+    width: 100%;
+    background-color: #fff;
+  }
+  &__btn {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  &__footer {
+    margin-top: 20px;
+    a {
+      color: #673ab7;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}
