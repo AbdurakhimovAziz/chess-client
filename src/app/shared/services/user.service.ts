@@ -16,8 +16,7 @@ export class UsersService {
   }
 
   public getUser(): User | null {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    return this.userSubject.value;
   }
 
   public getId(): string {

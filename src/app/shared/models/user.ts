@@ -5,10 +5,3 @@ export interface User {
   firstName: string;
   lastName: string;
 }
-
-export interface UserForm {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}

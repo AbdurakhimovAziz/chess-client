@@ -3,27 +3,33 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { BASE_URL } from '../shared/constants';
-import { User, UserForm } from '../shared/models/user';
+import { SigninResponse, SignupResponse } from '../shared/models/auth-response';
+import { User } from '../shared/models/user';
 import { UsersService } from '../shared/services/user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private model: string = 'auth';
+
   constructor(private http: HttpClient, private user: UsersService) {}
 
-  public login(email: string, password: string): Observable<Object> {
-    return this.http.post<User>(this.getUrl('login'), { email, password }).pipe(
-      tap((res: User) => {
-        this.user.setUser(res);
-      }),
-      catchError((err) => throwError(() => err))
-    );
+  public login(email: string, password: string): Observable<SigninResponse> {
+    return this.http
+      .post<SigninResponse>(this.getUrl('login'), { email, password })
+      .pipe(
+        tap((res: SigninResponse) => {
+          this.saveToken(res.token);
+          this.user.setUser(res.user);
+        }),
+        catchError((err) => throwError(() => err))
+      );
   }
 
-  public register(user: UserForm): Observable<User> {
+  public register(user: Omit<User, '_id'>): Observable<SignupResponse> {
     return this.http
-      .post<User>(this.getUrl('register'), user)
+      .post<SignupResponse>(this.getUrl('register'), user)
       .pipe(catchError((err) => throwError(() => err)));
   }
 
@@ -31,11 +37,16 @@ export class AuthService {
     return !!this.user.getUser();
   }
 
-  private getUrl(path: string): string {
-    return `${BASE_URL}/auth/${path}`;
+  public logout(): void {
+    localStorage.removeItem('token');
+    this.user.setUser(null);
   }
 
-  public logout(): void {
-    this.user.setUser(null);
+  private saveToken(token: string): void {
+    localStorage.setItem('token', token);
+  }
+
+  private getUrl(path: string): string {
+    return `${BASE_URL}/${this.model}/${path}`;
   }
 }
