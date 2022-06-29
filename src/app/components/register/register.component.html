@@ -1,0 +1,43 @@
+<div class="register">
+  <mat-card class="register__card">
+    <mat-card-content>
+      <form [formGroup]="registerForm" (submit)="register()">
+        <h2 class=register__title>Sign up</h2>
+        <div class="row">
+          <mat-form-field appearance="outline" class="flex-grow">
+            <mat-label>First Name</mat-label>
+            <input type="text" matInput formControlName="firstName" placeholder="Enter first name">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="flex-grow">
+            <mat-label>Last Name</mat-label>
+            <input type="text" matInput formControlName="lastName" placeholder="Enter last Name">
+          </mat-form-field>
+        </div>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input type="email" matInput formControlName="email" placeholder="Ex. pat@example.com">
+          <mat-error *ngIf="email?.hasError('email') && !email?.hasError('required')">
+            Please enter a valid email address
+          </mat-error>
+          <mat-error *ngIf="email?.hasError('required')">
+            Email is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Password</mat-label>
+          <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" placeholder="Enter a password">
+          <button mat-icon-button matSuffix (click)="hide=!hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide" type="button">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="password?.hasError('required')">
+            password is required
+          </mat-error>
+        </mat-form-field>
+        <mat-error *ngIf="errorMsg">User with this email already exists</mat-error>
+        <button mat-raised-button color="primary" class="register__btn" type="submit" [disabled]="!registerForm.valid">Register</button>
+      </form>
+      <mat-card-footer class="register__footer"> Already have an account? <a routerLink="/login">Sign in</a>
+      </mat-card-footer>
+    </mat-card-content>
+  </mat-card>
+</div>
