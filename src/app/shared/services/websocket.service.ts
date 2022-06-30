@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { catchError, EMPTY, Subject, switchAll, tap } from 'rxjs';
-
-const WS_ENDPOINT = 'ws://localhost:8080';
+import { WS_ENDPOINT } from '../constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebsocketService {
-  private socket$: WebSocketSubject<{ event: string; data: any }> =
-    webSocket(WS_ENDPOINT);
+  private socket$: WebSocketSubject<any> = webSocket(WS_ENDPOINT);
   private messagesSubject$ = new Subject<string>();
   public messages$ = this.messagesSubject$.asObservable();
 
