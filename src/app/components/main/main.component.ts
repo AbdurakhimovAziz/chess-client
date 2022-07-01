@@ -13,10 +13,17 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
     this.ws.connect();
     this.ws.messages$.subscribe((msg) => console.log(msg));
-    this.ws.sendMessage({ message: 'dfdf' });
-    this.ws.sendMessage(JSON.stringify({ event: 'message', data: 'dfdf' }));
-    this.ws.sendMessage(JSON.stringify({ event: 'message', data: 'dfdf' }));
-    // this.ws.sendMessage({ message: 'dfdf' });
-    // this.ws.sendMessage({ message: 'dfdf' });
+    this.sendMsg();
+  }
+
+  closeConnection() {
+    this.ws.disconnect();
+  }
+
+  sendMsg() {
+    const msg1 = JSON.stringify({ event: 'message', data: 'dfdf' });
+    const msg2 = JSON.stringify({ event: 'test', data: 'dfdf' });
+    this.ws.sendMessage(msg1);
+    this.ws.sendMessage(msg2);
   }
 }
