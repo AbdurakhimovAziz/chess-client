@@ -1,5 +1,6 @@
 <p>main works!</p>
 <mat-card>
+  <mat-card-content> {{messages.join(', ')}} </mat-card-content>
   <button mat-flat-button color="primary" (click)="closeConnection()">END</button>
   <button mat-flat-button color="warn" (click)="sendMsg()">SEND</button>
 </mat-card>

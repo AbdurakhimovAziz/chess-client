@@ -8,11 +8,15 @@ import { WebsocketService } from 'src/app/shared/services/websocket.service';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
-  constructor(private ws: WebsocketService) {}
+  public messages: string[] = [];
+
+  constructor(public ws: WebsocketService) {}
 
   ngOnInit(): void {
     this.ws.connect();
-    this.ws.messages$.subscribe((msg) => console.log(msg));
+    this.ws.messages$.subscribe((msg) => {
+      this.messages.push(msg.data);
+    });
     this.sendMsg();
   }
 
@@ -21,8 +25,8 @@ export class MainComponent implements OnInit {
   }
 
   sendMsg() {
-    const msg1 = JSON.stringify({ event: 'message', data: 'dfdf' });
-    const msg2 = JSON.stringify({ event: 'test', data: 'dfdf' });
+    const msg1 = { event: 'message', data: 'some data' };
+    const msg2 = { event: 'test', data: 'test' };
     this.ws.sendMessage(msg1);
     this.ws.sendMessage(msg2);
   }

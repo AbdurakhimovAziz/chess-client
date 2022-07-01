@@ -8,9 +8,8 @@ import { WS_ENDPOINT } from '../constants';
 })
 export class WebsocketService {
   private socket$: WebSocketSubject<any> = webSocket(WS_ENDPOINT);
-  private socket2 = new WebSocket(WS_ENDPOINT);
 
-  private messagesSubject$ = new Subject<string>();
+  private messagesSubject$ = new Subject<any>();
   public messages$ = this.messagesSubject$.asObservable();
 
   constructor() {}
@@ -18,7 +17,6 @@ export class WebsocketService {
   public connect() {
     this.socket$.subscribe({
       next: (msg) => {
-        console.log('msg', msg);
         this.messagesSubject$.next(msg);
       },
       error: (err) => console.log(err),
@@ -27,7 +25,6 @@ export class WebsocketService {
   }
 
   public sendMessage(msg: any) {
-    this.socket2.onopen = () => this.socket2.send(msg);
     this.socket$.next(msg);
   }
 
