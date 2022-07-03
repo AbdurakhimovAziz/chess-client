@@ -1,6 +1,19 @@
-<p>main works!</p>
-<mat-card>
-  <mat-card-content> {{messages.join(', ')}} </mat-card-content>
-  <button mat-flat-button color="primary" (click)="closeConnection()">END</button>
-  <button mat-flat-button color="warn" (click)="sendMsg()">SEND</button>
-</mat-card>
+<div style="display: flex; width: 100%; justify-content: center; align-items: center;">
+  <div>
+    <form (submit)="onSubmit()" [formGroup]="wsForm">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Event</mat-label>
+        <input type="text" matInput formControlName="event" placeholder="test / messages">
+      </mat-form-field>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Data</mat-label>
+        <input type="text" matInput formControlName="data" placeholder="some data">
+      </mat-form-field>
+      <button mat-flat-button color="warn" type="submit">SEND</button>
+    </form>
+    <mat-card>
+      <mat-card-content> {{messages.join(', ')}} </mat-card-content>
+      <button mat-flat-button color="primary" (click)="closeConnection()">END</button>
+    </mat-card>
+  </div>
+</div>

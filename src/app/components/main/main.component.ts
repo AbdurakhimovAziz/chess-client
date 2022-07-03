@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError, map, Observable, tap } from 'rxjs';
 import { WebsocketService } from 'src/app/shared/services/websocket.service';
 
@@ -8,26 +9,36 @@ import { WebsocketService } from 'src/app/shared/services/websocket.service';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
+  public wsForm = new FormGroup({
+    event: new FormControl('', [Validators.required]),
+    data: new FormControl('', [Validators.required]),
+  });
+
   public messages: string[] = [];
 
-  constructor(public ws: WebsocketService) {}
+  constructor(public websocket: WebsocketService) {}
 
   ngOnInit(): void {
-    this.ws.connect();
-    this.ws.messages$.subscribe((msg) => {
-      this.messages.push(msg.data);
-    });
-    this.sendMsg();
+    this.websocket
+      .on<string>('message')
+      .subscribe((msg) => this.messages.push(msg));
+
+    this.websocket
+      .on<string>('test')
+      .subscribe((msg) => this.messages.push(msg));
   }
 
-  closeConnection() {
-    this.ws.disconnect();
+  public closeConnection(): void {
+    this.websocket.disconnect();
   }
 
-  sendMsg() {
-    const msg1 = { event: 'message', data: 'some data' };
-    const msg2 = { event: 'test', data: 'test' };
-    this.ws.sendMessage(msg1);
-    this.ws.sendMessage(msg2);
+  public sendMsg(): void {
+    this.websocket.send('message', 'some data');
+  }
+
+  public onSubmit(): void {
+    if (this.wsForm.valid && this.wsForm.value.event) {
+      this.websocket.send(this.wsForm.value.event, this.wsForm.value.data);
+    }
   }
 }
