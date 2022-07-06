@@ -4,6 +4,7 @@
 html,
 body {
   height: 100%;
+  user-select: none;
 }
 body {
   margin: 0;
@@ -18,6 +19,7 @@ body {
   height: calc(64px * 8);
   display: flex;
   flex-wrap: wrap;
+  transition: all 0.5s ease-in-out;
 }
 
 .cell {

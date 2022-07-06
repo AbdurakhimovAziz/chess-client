@@ -21,9 +21,9 @@ export class Board {
       this.cells[i] = [];
       for (let j = 0; j < 8; j++) {
         if ((i + j) % 2 === 0) {
-          this.cells[i][j] = new Cell(j, i, Colors.BLACK); // BLACK
+          this.cells[i][j] = new Cell(j, i, Colors.WHITE);
         } else {
-          this.cells[i][j] = new Cell(j, i, Colors.WHITE); // WHITE
+          this.cells[i][j] = new Cell(j, i, Colors.BLACK);
         }
       }
     }
