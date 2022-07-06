@@ -1,3 +1,3 @@
 <ng-container *ngFor="let row of board.cells; let i = index">
-  <div *ngFor="let cell of row" class="cell" [ngClass]="cell.color"></div>
+  <div *ngFor="let cell of row" class="cell" [ngClass]="cell.color"> <img *ngIf="cell.getFigure() as figure" [src]="figure.imgSrc" alt=""> </div>
 </ng-container>

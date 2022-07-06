@@ -14,4 +14,12 @@ export class Cell {
     this.color = color;
     this.figure = null;
   }
+
+  public getFigure(): Figure | null {
+    return this.figure;
+  }
+
+  public setFigure(figure: Figure | null) {
+    this.figure = figure;
+  }
 }

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Board } from 'src/app/shared/models/chess/Board';
+import { Board } from 'src/app/shared/models/game/Board';
 
 @Component({
   selector: 'app-board',
