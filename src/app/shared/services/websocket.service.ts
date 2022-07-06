@@ -82,7 +82,7 @@ export class WebsocketService implements OnDestroy {
       error: (error: ErrorEvent) => console.error('WebSocket error!', error),
     });
 
-    this.connect();
+    // this.connect();
   }
 
   public connect() {

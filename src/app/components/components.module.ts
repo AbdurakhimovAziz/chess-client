@@ -7,9 +7,11 @@ import { MainComponent } from './main/main.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from '../app-routing.module';
+import { BoardComponent } from './board/board.component';
+import { CellComponent } from './cell/cell.component';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, MainComponent],
+  declarations: [LoginComponent, RegisterComponent, MainComponent, BoardComponent, CellComponent],
   imports: [
     CommonModule,
     AppMaterialModule,

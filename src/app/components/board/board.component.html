@@ -1,0 +1,3 @@
+<ng-container *ngFor="let row of board.cells; let i = index">
+  <div *ngFor="let cell of row" class="cell" [ngClass]="cell.color"></div>
+</ng-container>

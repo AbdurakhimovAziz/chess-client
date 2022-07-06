@@ -1,4 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+@use "./app/shared/scss/mixins" as *;
+@use "./app/shared/scss/variables" as *;
 
 html,
 body {
@@ -10,4 +11,25 @@ body {
 }
 .full-width {
   width: 100%;
+}
+
+.board {
+  width: calc(64px * 8);
+  height: calc(64px * 8);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cell {
+  width: 64px;
+  height: 64px;
+  @include flex-center;
+}
+
+.black {
+  background-color: $board-black;
+}
+
+.white {
+  background-color: $board-white;
 }
