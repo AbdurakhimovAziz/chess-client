@@ -12,11 +12,11 @@ export abstract class Figure {
     this.type = FigureTypes.NONE;
   }
 
-  canMove(cell: Cell): boolean {
+  public canMove(cell: Cell): boolean {
     return true;
   }
 
-  move(cell: Cell): void {
+  public move(cell: Cell): void {
     //
   }
 }

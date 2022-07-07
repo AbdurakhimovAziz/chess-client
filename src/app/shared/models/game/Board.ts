@@ -10,6 +10,7 @@ import { Rook } from './figures/Rook';
 
 export class Board {
   public readonly cells: Cell[][] = [];
+  public readonly pieces: Figure[] = [];
 
   public init(): void {
     this.initCells();
@@ -44,6 +45,7 @@ export class Board {
 
   private addFigure(figure: Figure, x: number, y: number): void {
     this.getCell(x, y).setFigure(figure);
+    this.pieces.push(figure);
   }
 
   private addKings(): void {

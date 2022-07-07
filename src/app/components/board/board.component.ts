@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Board } from 'src/app/shared/models/game/Board';
+import { Cell } from 'src/app/shared/models/game/Cell';
+import { GameViewService } from 'src/app/shared/services/game-view.service';
 
 @Component({
   selector: 'app-board',
@@ -9,9 +11,17 @@ import { Board } from 'src/app/shared/models/game/Board';
 export class BoardComponent implements OnInit {
   @Input() board!: Board;
 
-  constructor() {}
+  constructor(private gameViewService: GameViewService) {}
 
   ngOnInit(): void {
     console.log('board', this.board);
+  }
+
+  public onCellClick(cell: Cell): void {
+    this.gameViewService.setActiveCell(cell);
+  }
+
+  getActiveCell(): Cell | null {
+    return this.gameViewService.getActiveCell();
   }
 }

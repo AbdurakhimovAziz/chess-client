@@ -1,3 +1,5 @@
 <ng-container *ngFor="let row of board.cells; let i = index">
-  <div *ngFor="let cell of row" class="cell" [ngClass]="cell.color"> <img *ngIf="cell.getFigure() as figure" [src]="figure.imgSrc" alt=""> </div>
+  <app-cell *ngFor="let cell of row" class="cell" [class]="cell.color"
+    [ngClass]="{'selected' : cell.x === this.getActiveCell()?.x && cell.y === this.getActiveCell()?.y}" [cell]="cell" (click)="onCellClick(cell)">
+  </app-cell>
 </ng-container>

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Cell } from 'src/app/shared/models/game/Cell';
 
 @Component({
   selector: 'app-cell',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./cell.component.scss'],
 })
 export class CellComponent implements OnInit {
+  @Input() cell!: Cell;
   constructor() {}
 
   ngOnInit(): void {}

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Colors } from 'src/app/shared/models/game/Colors';
 import { Pawn } from 'src/app/shared/models/game/figures/Pawn';
+import { GameService } from 'src/app/shared/services/game.service';
 import { WebsocketService } from 'src/app/shared/services/websocket.service';
 
 @Component({
@@ -11,16 +12,12 @@ import { WebsocketService } from 'src/app/shared/services/websocket.service';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
-  public board: Board = new Board();
+  public board!: Board;
 
-  constructor() {}
+  constructor(private gameService: GameService) {}
 
   ngOnInit(): void {
-    this.restart();
-  }
-
-  public restart() {
-    this.board = new Board();
-    this.board.init();
+    this.gameService.restart();
+    this.board = this.gameService.getBoard();
   }
 }
