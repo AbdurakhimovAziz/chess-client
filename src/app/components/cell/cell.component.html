@@ -1,1 +1,2 @@
 <img *ngIf="cell.getFigure() as figure" [src]="figure.imgSrc" [alt]="figure.type">
+<div *ngIf="!cell.getFigure() && cell.isAvailable()" class="hint"></div>

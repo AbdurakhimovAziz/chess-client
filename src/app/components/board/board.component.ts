@@ -14,7 +14,9 @@ export class BoardComponent implements OnInit {
   constructor(private gameViewService: GameViewService) {}
 
   ngOnInit(): void {
-    console.log('board', this.board);
+    this.gameViewService.activeCell$.subscribe((cell) =>
+      this.gameViewService.highlightCells(cell)
+    );
   }
 
   public onCellClick(cell: Cell): void {

@@ -9,8 +9,8 @@ import { Queen } from './figures/Queen';
 import { Rook } from './figures/Rook';
 
 export class Board {
-  public readonly cells: Cell[][] = [];
-  public readonly pieces: Figure[] = [];
+  private cells: Cell[][] = [];
+  private pieces: Figure[] = [];
 
   public init(): void {
     this.initCells();
@@ -32,6 +32,10 @@ export class Board {
 
   public getCell(x: number, y: number): Cell {
     return this.cells[y][x];
+  }
+
+  public getCells(): Cell[][] {
+    return this.cells;
   }
 
   public addFigures(): void {
