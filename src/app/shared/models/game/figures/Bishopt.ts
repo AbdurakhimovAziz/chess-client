@@ -1,3 +1,4 @@
+import { CellChecker } from 'src/app/shared/utils/cell-checker';
 import { Board } from '../Board';
 import { Cell } from '../Cell';
 import { Colors } from '../Colors';
@@ -14,6 +15,7 @@ export class Bishop extends Figure {
 
   public override canMove(board: Board, start: Cell, end: Cell): boolean {
     if (!super.canMove(board, start, end)) return false;
-    return true;
+    if (CellChecker.isDiagonalEmpty(board, start, end)) return true;
+    return false;
   }
 }
