@@ -20,7 +20,10 @@ export class BoardComponent implements OnInit {
   }
 
   public onCellClick(cell: Cell): void {
-    this.gameViewService.setActiveCell(cell);
+    if (this.getActiveCell()) {
+      this.getActiveCell()?.moveFigure(cell);
+      this.gameViewService.setActiveCell(null);
+    } else if (cell.getFigure()) this.gameViewService.setActiveCell(cell);
   }
 
   getActiveCell(): Cell | null {

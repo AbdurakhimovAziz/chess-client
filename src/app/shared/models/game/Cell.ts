@@ -30,4 +30,11 @@ export class Cell {
   public setFigure(figure: Figure | null) {
     this.figure = figure;
   }
+
+  public moveFigure(target: Cell): void {
+    if (this.figure && this.figure.canMove(target) && this !== target) {
+      this.figure.move(target);
+      this.setFigure(null);
+    }
+  }
 }

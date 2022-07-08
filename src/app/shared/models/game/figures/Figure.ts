@@ -16,7 +16,7 @@ export abstract class Figure {
     return true;
   }
 
-  public move(cell: Cell): void {
-    //
+  public move(target: Cell): void {
+    target.setFigure(this);
   }
 }
