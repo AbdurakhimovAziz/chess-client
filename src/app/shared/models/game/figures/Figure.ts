@@ -1,3 +1,4 @@
+import { Board } from '../Board';
 import { Cell } from '../Cell';
 import { Colors } from '../Colors';
 import { FigureTypes } from './Figure-types';
@@ -12,7 +13,13 @@ export abstract class Figure {
     this.type = FigureTypes.NONE;
   }
 
-  public canMove(cell: Cell): boolean {
+  public canMove(board: Board, start: Cell, end: Cell): boolean {
+    const targetFigure = end.getFigure();
+    if (
+      targetFigure?.color === this.color ||
+      targetFigure?.type === FigureTypes.KING
+    )
+      return false;
     return true;
   }
 

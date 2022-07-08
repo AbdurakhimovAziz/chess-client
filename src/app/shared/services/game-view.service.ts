@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
-import { Board } from '../models/game/Board';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Cell } from '../models/game/Cell';
 import { GameService } from './game.service';
 
@@ -13,25 +12,24 @@ export class GameViewService {
 
   constructor(private gameService: GameService) {
     this.activeCellSubject = new BehaviorSubject<Cell | null>(null);
-    this.activeCell$ = this.activeCellSubject
-      .asObservable()
-      .pipe(distinctUntilChanged());
+    this.activeCell$ = this.activeCellSubject.asObservable();
   }
 
   public highlightCells(selectedCell: Cell | null): void {
-    const cells = this.gameService.getBoard().getCells();
+    const board = this.gameService.getBoard();
+    const cells = board.getCells();
     for (let row of cells) {
       for (let cell of row) {
-        cell.setAvailable(!!selectedCell?.getFigure()?.canMove(cell));
+        cell.setAvailable(
+          !!selectedCell?.getFigure()?.canMove(board, selectedCell, cell)
+        );
       }
     }
   }
 
   public setActiveCell(cell: Cell | null) {
-    // if (cell?.getFigure()) {
     if (cell === this.getActiveCell()) this.activeCellSubject.next(null);
     else this.activeCellSubject.next(cell);
-    // }
   }
 
   public getActiveCell(): Cell | null {

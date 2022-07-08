@@ -1,3 +1,5 @@
+import { Board } from '../Board';
+import { Cell } from '../Cell';
 import { Colors } from '../Colors';
 import { Figure } from './Figure';
 import { FigureTypes } from './Figure-types';
@@ -8,5 +10,10 @@ export class Bishop extends Figure {
     this.type = FigureTypes.BISHOP;
     this.color = color;
     this.imgSrc = `./assets/images/figures/bishop-${color}.png`;
+  }
+
+  public override canMove(board: Board, start: Cell, end: Cell): boolean {
+    if (!super.canMove(board, start, end)) return false;
+    return true;
   }
 }
