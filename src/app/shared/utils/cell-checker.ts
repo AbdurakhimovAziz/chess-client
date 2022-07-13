@@ -46,4 +46,10 @@ export class CellChecker {
     }
     return true;
   }
+
+  public static areEnemies(cell1: Cell, cell2: Cell): boolean {
+    const figure1 = cell1.getFigure();
+    const figure2 = cell2.getFigure();
+    return !!(figure1 && figure2 && figure1.color !== figure2.color);
+  }
 }

@@ -1,5 +1,7 @@
 <ng-container *ngFor="let row of board.getCells(); let i = index">
-  <app-cell *ngFor="let cell of row" class="cell" [class]="cell.color" [ngClass]="{'selected' : cell.x === this.getActiveCell()?.x && cell.y === this.getActiveCell()?.y, 'under-attack' :
-    cell.getFigure() && cell.isAvailable()}" [cell]="cell" (click)="onCellClick(cell)">
+  <app-cell *ngFor="let cell of row" class="cell" [class]="cell.color" [ngClass]="{
+    'selected' : cell.x === this.getActiveCell()?.x && cell.y === this.getActiveCell()?.y,
+    'under-attack' : cell.getFigure() && cell.isAvailable(),
+    'hinted' : !cell.getFigure() && cell.isAvailable()}" [cell]="cell" (click)="onCellClick(cell)">
   </app-cell>
 </ng-container>

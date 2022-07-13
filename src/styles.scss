@@ -32,6 +32,9 @@ body {
   &.under-attack {
     background-color: $cell-attack;
   }
+  &.hinted {
+    cursor: pointer;
+  }
   img {
     width: 80%;
     height: 80%;

@@ -14,6 +14,10 @@ export class Knight extends Figure {
 
   public override canMove(board: Board, start: Cell, end: Cell): boolean {
     if (!super.canMove(board, start, end)) return false;
-    return true;
+
+    const dx = Math.abs(end.x - start.x);
+    const dy = Math.abs(end.y - start.y);
+
+    return (dx === 1 && dy === 2) || (dx === 2 && dy === 1);
   }
 }

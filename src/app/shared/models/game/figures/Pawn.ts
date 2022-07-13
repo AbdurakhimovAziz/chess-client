@@ -1,3 +1,4 @@
+import { CellChecker } from 'src/app/shared/utils/cell-checker';
 import { Board } from '../Board';
 import { Cell } from '../Cell';
 import { Colors } from '../Colors';
@@ -6,6 +7,8 @@ import { FigureTypes } from './Figure-types';
 // import a from '../../../../../assets'
 
 export class Pawn extends Figure {
+  private isFirstMove: boolean = true;
+
   constructor(color: Colors) {
     super(color);
     this.type = FigureTypes.PAWN;
@@ -15,6 +18,31 @@ export class Pawn extends Figure {
 
   public override canMove(board: Board, start: Cell, end: Cell): boolean {
     if (!super.canMove(board, start, end)) return false;
-    return true;
+    const direction = this.color === Colors.BLACK ? 1 : -1;
+    const firstStepDirection = this.color === Colors.BLACK ? 2 : -2;
+
+    if (
+      (end.y === start.y + direction ||
+        (this.isFirstMove && end.y === start.y + firstStepDirection)) &&
+      end.x === start.x &&
+      !board.getCell(end.x, end.y).getFigure()
+    ) {
+      return true;
+    }
+
+    if (
+      end.y === start.y + direction &&
+      Math.abs(end.x - start.x) === 1 &&
+      CellChecker.areEnemies(start, end)
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public override move(target: Cell): void {
+    super.move(target);
+    this.isFirstMove = false;
   }
 }
