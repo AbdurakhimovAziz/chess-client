@@ -1,3 +1,4 @@
+import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Cell } from 'src/app/shared/models/game/Cell';
@@ -18,9 +19,10 @@ export class BoardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.gameViewService.activeCell$.subscribe((cell) =>
-      this.gameViewService.highlightCells(cell)
-    );
+    this.gameViewService.activeCell$.subscribe((cell) => {
+      this.gameViewService.highlightCells(cell);
+      console.log('active cell', cell);
+    });
   }
 
   public onCellClick(cell: Cell): void {
@@ -31,12 +33,53 @@ export class BoardComponent implements OnInit {
       activeCell !== cell &&
       activeCell.getFigure()?.canMove(board, activeCell, cell)
     ) {
+      console.log('move');
+
       this.gameService.moveFigure(activeCell, cell);
       this.gameViewService.setActiveCell(null);
-    } else if (cell.getFigure()) this.gameViewService.setActiveCell(cell);
+    } else if (!cell.isEmpty()) {
+      console.log('select');
+
+      this.gameViewService.setActiveCell(cell);
+    }
   }
 
-  getActiveCell(): Cell | null {
+  public getActiveCell(): Cell | null {
     return this.gameViewService.getActiveCell();
+  }
+
+  public dragStarted(cell: Cell) {
+    console.log('drag started');
+
+    this.gameViewService.setActiveCell(cell);
+  }
+
+  public dragEnded(event: CdkDragEnd, cell: Cell) {
+    // TODO: refactor, implement resetting figure's position
+    const activeCell = this.getActiveCell();
+    console.log(cell, event.distance);
+
+    if (activeCell) {
+      const x = Math.round(activeCell.x + event.distance.x / 64);
+      const y = Math.round(activeCell.y + event.distance.y / 64);
+      const cell = this.board.getCell(x, y);
+      const board = this.board;
+      if (
+        activeCell &&
+        activeCell !== cell &&
+        activeCell.getFigure()?.canMove(board, activeCell, cell)
+      ) {
+        console.log('move');
+
+        this.gameService.moveFigure(activeCell, cell);
+        this.gameViewService.setActiveCell(null);
+      }
+      console.log('cell', cell);
+
+      console.log('drag ended', x, y);
+
+      this.gameViewService.setActiveCell(null);
+      console.log('active cell', this.getActiveCell());
+    }
   }
 }

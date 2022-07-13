@@ -38,6 +38,10 @@ export class Board {
     return this.cells;
   }
 
+  public isCellEmpty(x: number, y: number): boolean {
+    return this.getCell(x, y).isEmpty();
+  }
+
   public addFigures(): void {
     this.addKings();
     this.addPawns();

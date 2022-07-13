@@ -31,4 +31,8 @@ export class Cell {
   public setFigure(figure: Figure | null) {
     this.figure = figure;
   }
+
+  public isEmpty(): boolean {
+    return this.figure === null;
+  }
 }

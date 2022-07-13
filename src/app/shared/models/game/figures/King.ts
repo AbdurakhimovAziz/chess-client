@@ -14,6 +14,7 @@ export class King extends Figure {
 
   public override canMove(board: Board, start: Cell, end: Cell): boolean {
     if (!super.canMove(board, start, end)) return false;
-    return true;
+
+    return false;
   }
 }

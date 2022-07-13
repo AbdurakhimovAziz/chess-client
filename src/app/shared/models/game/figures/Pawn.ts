@@ -4,7 +4,6 @@ import { Cell } from '../Cell';
 import { Colors } from '../Colors';
 import { Figure } from './Figure';
 import { FigureTypes } from './Figure-types';
-// import a from '../../../../../assets'
 
 export class Pawn extends Figure {
   private isFirstMove: boolean = true;
@@ -22,10 +21,11 @@ export class Pawn extends Figure {
     const firstStepDirection = this.color === Colors.BLACK ? 2 : -2;
 
     if (
+      // TODO:do not move if there is a figure on the way
       (end.y === start.y + direction ||
         (this.isFirstMove && end.y === start.y + firstStepDirection)) &&
       end.x === start.x &&
-      !board.getCell(end.x, end.y).getFigure()
+      board.isCellEmpty(end.x, end.y)
     ) {
       return true;
     }
