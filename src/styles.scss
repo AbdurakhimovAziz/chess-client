@@ -57,3 +57,7 @@ body {
 .white {
   background-color: $board-white;
 }
+
+.cdk-drag-placeholder {
+  display: none;
+}
