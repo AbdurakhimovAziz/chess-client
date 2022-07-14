@@ -42,6 +42,7 @@ export class BoardComponent implements OnInit {
   }
 
   public dragStarted(cell: Cell) {
+    this.gameViewService.setIsDragging(true);
     this.gameViewService.setActiveCell(cell);
   }
 
@@ -61,6 +62,7 @@ export class BoardComponent implements OnInit {
         const cell = this.board.getCell(x, y);
         this.handleMove(cell);
       }
+      this.gameViewService.setIsDragging(false);
       this.gameViewService.setActiveCell(null);
     }
   }

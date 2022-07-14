@@ -7,6 +7,7 @@ import { FigureTypes } from './Figure-types';
 
 export class Pawn extends Figure {
   private isFirstMove: boolean = true;
+  // TODO: implement en passant move
 
   constructor(color: Colors) {
     super(color);
@@ -21,9 +22,10 @@ export class Pawn extends Figure {
     const firstStepDirection = this.color === Colors.BLACK ? 2 : -2;
 
     if (
-      // TODO:do not move if there is a figure on the way
       (end.y === start.y + direction ||
-        (this.isFirstMove && end.y === start.y + firstStepDirection)) &&
+        (this.isFirstMove &&
+          end.y === start.y + firstStepDirection &&
+          board.isCellEmpty(end.x, end.y - direction))) &&
       end.x === start.x &&
       board.isCellEmpty(end.x, end.y)
     ) {
