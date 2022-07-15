@@ -2,6 +2,7 @@ import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Cell } from 'src/app/shared/models/game/Cell';
+import { Player } from 'src/app/shared/models/game/Player';
 import { GameViewService } from 'src/app/shared/services/game-view.service';
 import { GameService } from 'src/app/shared/services/game.service';
 
@@ -13,6 +14,8 @@ import { GameService } from 'src/app/shared/services/game.service';
 export class BoardComponent implements OnInit {
   @Input() board!: Board;
 
+  private currentPlayer!: Player;
+
   constructor(
     private gameService: GameService,
     private gameViewService: GameViewService
@@ -22,11 +25,16 @@ export class BoardComponent implements OnInit {
     this.gameViewService.activeCell$.subscribe((cell) =>
       this.gameViewService.highlightCells(cell)
     );
+
+    this.gameService.currentPlayer$.subscribe(
+      (player) => (this.currentPlayer = player)
+    );
   }
 
   public handleMove(cell: Cell): void {
     const board = this.board;
     const activeCell = this.getActiveCell();
+
     if (
       activeCell &&
       activeCell !== cell &&
@@ -34,7 +42,12 @@ export class BoardComponent implements OnInit {
     ) {
       this.gameService.moveFigure(activeCell, cell);
       this.gameViewService.setActiveCell(null);
-    } else if (!cell.isEmpty()) this.gameViewService.setActiveCell(cell);
+      this.gameService.swapCurrentPlayer();
+    } else if (
+      !cell.isEmpty() &&
+      this.gameService.isRightTurn(cell.getFigure()?.color!)
+    )
+      this.gameViewService.setActiveCell(cell);
   }
 
   public getActiveCell(): Cell | null {
@@ -42,8 +55,10 @@ export class BoardComponent implements OnInit {
   }
 
   public dragStarted(cell: Cell) {
-    this.gameViewService.setIsDragging(true);
-    this.gameViewService.setActiveCell(cell);
+    if (this.gameService.isRightTurn(cell.getFigure()?.color!)) {
+      this.gameViewService.setIsDragging(true);
+      this.gameViewService.setActiveCell(cell);
+    }
   }
 
   public dragEnded(event: CdkDragEnd) {

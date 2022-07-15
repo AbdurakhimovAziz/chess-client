@@ -35,7 +35,7 @@ export class GameViewService {
     }
   }
 
-  public setActiveCell(cell: Cell | null) {
+  public setActiveCell(cell: Cell | null): void {
     if (cell === this.getActiveCell() && !this.getIsDragging())
       this.activeCellSubject.next(null);
     else this.activeCellSubject.next(cell);
@@ -45,7 +45,7 @@ export class GameViewService {
     return this.activeCellSubject.getValue();
   }
 
-  public setIsDragging(isDragging: boolean) {
+  public setIsDragging(isDragging: boolean): void {
     this.isDraggingSubject.next(isDragging);
   }
 
