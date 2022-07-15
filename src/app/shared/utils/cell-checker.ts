@@ -1,7 +1,7 @@
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
 
-export class CellChecker {
+export abstract class CellChecker {
   public static isVerticalEmpty(board: Board, start: Cell, end: Cell): boolean {
     if (start.x !== end.x) return false;
 
@@ -10,7 +10,7 @@ export class CellChecker {
 
     for (let i = min + 1; i < max; i++) {
       const cell = board.getCell(start.x, i);
-      if (cell.getFigure()) return false;
+      if (!cell.isEmpty()) return false;
     }
     return true;
   }
@@ -27,7 +27,7 @@ export class CellChecker {
 
     for (let i = min + 1; i < max; i++) {
       const cell = board.getCell(i, start.y);
-      if (cell.getFigure()) return false;
+      if (!cell.isEmpty()) return false;
     }
     return true;
   }
@@ -42,7 +42,7 @@ export class CellChecker {
 
     for (let i = 1; i < absX; i++) {
       const cell = board.getCell(start.x + i * dx, start.y + i * dy);
-      if (cell.getFigure()) return false;
+      if (!cell.isEmpty()) return false;
     }
     return true;
   }

@@ -9,14 +9,16 @@ export class Rook extends Figure {
   constructor(color: Colors) {
     super(color);
     this.type = FigureTypes.ROOK;
-    this.color = color;
     this.imgSrc = `./assets/images/figures/rook-${color}.png`;
   }
 
   public override canMove(board: Board, start: Cell, end: Cell): boolean {
     if (!super.canMove(board, start, end)) return false;
-    if (CellChecker.isHorizontalEmpty(board, start, end)) return true;
-    if (CellChecker.isVerticalEmpty(board, start, end)) return true;
+    if (
+      CellChecker.isHorizontalEmpty(board, start, end) ||
+      CellChecker.isVerticalEmpty(board, start, end)
+    )
+      return true;
     return false;
   }
 }

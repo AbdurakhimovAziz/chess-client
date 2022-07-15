@@ -9,7 +9,6 @@ export class Bishop extends Figure {
   constructor(color: Colors) {
     super(color);
     this.type = FigureTypes.BISHOP;
-    this.color = color;
     this.imgSrc = `./assets/images/figures/bishop-${color}.png`;
   }
 
