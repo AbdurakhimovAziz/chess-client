@@ -10,7 +10,7 @@ import { Rook } from './figures/Rook';
 
 export class Board {
   private cells: Cell[][] = [];
-  private pieces: Figure[] = [];
+  private figures: Figure[] = [];
 
   public init(): void {
     this.initCells();
@@ -53,7 +53,7 @@ export class Board {
 
   private addFigure(figure: Figure, x: number, y: number): void {
     this.getCell(x, y).setFigure(figure);
-    this.pieces.push(figure);
+    this.figures.push(figure);
   }
 
   private addKings(): void {
@@ -92,5 +92,22 @@ export class Board {
     this.addFigure(new Rook(Colors.BLACK), 7, 0);
     this.addFigure(new Rook(Colors.WHITE), 0, 7);
     this.addFigure(new Rook(Colors.WHITE), 7, 7);
+  }
+
+  public getCellsWithFigure(color: Colors): Cell[] {
+    return this.cells.reduce((acc, row) => {
+      return acc.concat(
+        row.filter(
+          (cell) =>
+            cell.getFigure() !== null && cell.getFigure()?.color === color
+        )
+      );
+    }, []);
+  }
+
+  public getKing(color: Colors): Figure {
+    return this.figures.find(
+      (figure) => figure.color === color && figure instanceof King
+    ) as King;
   }
 }

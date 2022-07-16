@@ -6,7 +6,7 @@ import { Figure } from './Figure';
 import { FigureTypes } from './Figure-types';
 
 export class Pawn extends Figure {
-  private isFirstMove: boolean = true;
+  private firstMove: boolean = true;
   // TODO: implement en passant move
 
   constructor(color: Colors) {
@@ -22,7 +22,7 @@ export class Pawn extends Figure {
 
     if (
       (end.y === start.y + direction ||
-        (this.isFirstMove &&
+        (this.firstMove &&
           end.y === start.y + firstStepDirection &&
           board.isCellEmpty(end.x, end.y - direction))) &&
       end.x === start.x &&
@@ -42,8 +42,7 @@ export class Pawn extends Figure {
     return false;
   }
 
-  public override move(target: Cell): void {
-    super.move(target);
-    this.isFirstMove = false;
+  public setFirstMove(firstMove: boolean): void {
+    this.firstMove = firstMove;
   }
 }

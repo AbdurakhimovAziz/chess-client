@@ -17,6 +17,7 @@ export class King extends Figure {
 
     const dx = Math.abs(end.x - start.x);
     const dy = Math.abs(end.y - start.y);
+    // TODO: check if move will not result a check
 
     return (
       (dx === 1 && dy === 1) || (dx === 0 && dy === 1) || (dx === 1 && dy === 0)

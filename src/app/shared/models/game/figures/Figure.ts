@@ -15,15 +15,7 @@ export abstract class Figure {
 
   public canMove(board: Board, start: Cell, end: Cell): boolean {
     const targetFigure = end.getFigure();
-    if (
-      targetFigure?.color === this.color ||
-      targetFigure?.type === FigureTypes.KING
-    )
-      return false;
+    if (targetFigure?.color === this.color) return false;
     return true;
-  }
-
-  public move(target: Cell): void {
-    target.setFigure(this);
   }
 }

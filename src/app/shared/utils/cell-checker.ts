@@ -1,5 +1,6 @@
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
+import { Colors } from '../models/game/Colors';
 
 export abstract class CellChecker {
   public static isVerticalEmpty(board: Board, start: Cell, end: Cell): boolean {
@@ -51,5 +52,21 @@ export abstract class CellChecker {
     const figure1 = cell1.getFigure();
     const figure2 = cell2.getFigure();
     return !!(figure1 && figure2 && figure1.color !== figure2.color);
+  }
+
+  public static isKingUderCheck(board: Board, color: Colors): boolean {
+    const king = board.getKing(color);
+    const enemyColor = color === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+
+    const enemyCells = board.getCellsWithFigure(enemyColor);
+    console.log(enemyCells);
+
+    // for (const enemyCell of enemyCells) {
+    // if (enemyCell.getFigure()?.canMove(board, enemyCell, king)) {
+    // return true;
+    // }
+    // }
+
+    return false;
   }
 }
