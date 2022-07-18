@@ -69,7 +69,6 @@ export abstract class CellChecker {
 
     const color = king.color;
     const enemyColor = color === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
-
     const enemyCells = board.getCellsWithFigure(enemyColor);
 
     for (const enemyCell of enemyCells) {

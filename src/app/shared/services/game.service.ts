@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
 import { Colors } from '../models/game/Colors';
-import { Figure } from '../models/game/figures/Figure';
+import { FigureTypes } from '../models/game/figures/Figure-types';
 import { King } from '../models/game/figures/King';
 import { Pawn } from '../models/game/figures/Pawn';
 import { Move } from '../models/game/Move';
@@ -70,14 +70,15 @@ export class GameService {
     if (figure) {
       const move = new Move(this.getCurrentPlayer(), start, end);
       const targetFigure = end.getFigure();
+      if (targetFigure?.type !== FigureTypes.KING) {
+        targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
 
-      targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
+        end.setFigure(figure);
+        start.setFigure(null);
 
-      end.setFigure(figure);
-      start.setFigure(null);
-
-      if (figure instanceof Pawn) figure.setFirstMove(false);
-      this.moveService.addMove(move);
+        if (figure instanceof Pawn) figure.setFirstMove(false);
+        this.moveService.addMove(move);
+      }
     }
   }
 

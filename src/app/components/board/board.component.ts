@@ -1,13 +1,14 @@
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
+import { CELL_WIDTH } from 'src/app/shared/constants';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Cell } from 'src/app/shared/models/game/Cell';
-import { Colors } from 'src/app/shared/models/game/Colors';
 import { Figure } from 'src/app/shared/models/game/figures/Figure';
 import { FigureTypes } from 'src/app/shared/models/game/figures/Figure-types';
 import { Player } from 'src/app/shared/models/game/Player';
 import { GameViewService } from 'src/app/shared/services/game-view.service';
 import { GameService } from 'src/app/shared/services/game.service';
+import { MoveService } from 'src/app/shared/services/move.service';
 import { CellChecker } from 'src/app/shared/utils/cell-checker';
 
 @Component({
@@ -22,7 +23,8 @@ export class BoardComponent implements OnInit {
 
   constructor(
     private gameService: GameService,
-    private gameViewService: GameViewService
+    private gameViewService: GameViewService,
+    private moveService: MoveService
   ) {}
 
   ngOnInit(): void {
@@ -33,16 +35,18 @@ export class BoardComponent implements OnInit {
     this.gameService.currentPlayer$.subscribe(
       (player) => (this.currentPlayer = player)
     );
+
+    this.moveService.lastMove$.subscribe((move) => {
+      if (move) this.gameService.swapCurrentPlayer();
+    });
   }
 
   public handleMove(cell: Cell): void {
-    const board = this.board;
     const activeCell = this.getActiveCell();
 
     if (activeCell && activeCell !== cell && cell.isAvailable()) {
       this.gameService.moveFigure(activeCell, cell);
       this.gameViewService.setActiveCell(null);
-      this.gameService.swapCurrentPlayer();
     } else if (
       !cell.isEmpty() &&
       this.gameService.isRightTurn(cell.getFigure()?.color!)
@@ -65,8 +69,9 @@ export class BoardComponent implements OnInit {
     const activeCell = this.getActiveCell();
 
     if (activeCell) {
-      const x = Math.round(activeCell.x + event.distance.x / 64);
-      const y = Math.round(activeCell.y + event.distance.y / 64);
+      // TODO: recalculate if board is rotated
+      const x = Math.round(activeCell.x + event.distance.x / CELL_WIDTH);
+      const y = Math.round(activeCell.y + event.distance.y / CELL_WIDTH);
       if (
         (x !== activeCell.x || y !== activeCell.y) &&
         x < 8 &&
