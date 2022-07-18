@@ -57,41 +57,41 @@ export class Board {
   }
 
   private addKings(): void {
-    this.addFigure(new King(Colors.BLACK), 4, 0);
-    this.addFigure(new King(Colors.WHITE), 4, 7);
+    this.addFigure(new King(Colors.BLACK, 4, 0), 4, 0);
+    this.addFigure(new King(Colors.WHITE, 4, 7), 4, 7);
   }
 
   private addQueens(): void {
-    this.addFigure(new Queen(Colors.BLACK), 3, 0);
-    this.addFigure(new Queen(Colors.WHITE), 3, 7);
+    this.addFigure(new Queen(Colors.BLACK, 3, 0), 3, 0);
+    this.addFigure(new Queen(Colors.WHITE, 3, 7), 3, 7);
   }
 
   private addPawns(): void {
     for (let i = 0; i < 8; i++) {
-      this.addFigure(new Pawn(Colors.BLACK), i, 1);
-      this.addFigure(new Pawn(Colors.WHITE), i, 6);
+      this.addFigure(new Pawn(Colors.BLACK, i, 1), i, 1);
+      this.addFigure(new Pawn(Colors.WHITE, i, 6), i, 6);
     }
   }
 
   private addBishops(): void {
-    this.addFigure(new Bishop(Colors.BLACK), 2, 0);
-    this.addFigure(new Bishop(Colors.BLACK), 5, 0);
-    this.addFigure(new Bishop(Colors.WHITE), 2, 7);
-    this.addFigure(new Bishop(Colors.WHITE), 5, 7);
+    this.addFigure(new Bishop(Colors.BLACK, 2, 0), 2, 0);
+    this.addFigure(new Bishop(Colors.BLACK, 5, 0), 5, 0);
+    this.addFigure(new Bishop(Colors.WHITE, 2, 7), 2, 7);
+    this.addFigure(new Bishop(Colors.WHITE, 5, 7), 5, 7);
   }
 
   private addKnights(): void {
-    this.addFigure(new Knight(Colors.BLACK), 1, 0);
-    this.addFigure(new Knight(Colors.BLACK), 6, 0);
-    this.addFigure(new Knight(Colors.WHITE), 1, 7);
-    this.addFigure(new Knight(Colors.WHITE), 6, 7);
+    this.addFigure(new Knight(Colors.BLACK, 1, 0), 1, 0);
+    this.addFigure(new Knight(Colors.BLACK, 6, 0), 6, 0);
+    this.addFigure(new Knight(Colors.WHITE, 1, 7), 1, 7);
+    this.addFigure(new Knight(Colors.WHITE, 6, 7), 6, 7);
   }
 
   private addRooks(): void {
-    this.addFigure(new Rook(Colors.BLACK), 0, 0);
-    this.addFigure(new Rook(Colors.BLACK), 7, 0);
-    this.addFigure(new Rook(Colors.WHITE), 0, 7);
-    this.addFigure(new Rook(Colors.WHITE), 7, 7);
+    this.addFigure(new Rook(Colors.BLACK, 0, 0), 0, 0);
+    this.addFigure(new Rook(Colors.BLACK, 7, 0), 7, 0);
+    this.addFigure(new Rook(Colors.WHITE, 0, 7), 0, 7);
+    this.addFigure(new Rook(Colors.WHITE, 7, 7), 7, 7);
   }
 
   public getCellsWithFigure(color: Colors): Cell[] {
@@ -105,7 +105,7 @@ export class Board {
     }, []);
   }
 
-  public getKing(color: Colors): Figure {
+  public getKing(color: Colors): King {
     return this.figures.find(
       (figure) => figure.color === color && figure instanceof King
     ) as King;

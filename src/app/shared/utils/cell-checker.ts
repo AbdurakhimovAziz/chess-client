@@ -1,9 +1,15 @@
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
 import { Colors } from '../models/game/Colors';
+import { Figure } from '../models/game/figures/Figure';
+import { Point } from '../models/game/Point';
 
 export abstract class CellChecker {
-  public static isVerticalEmpty(board: Board, start: Cell, end: Cell): boolean {
+  public static isVerticalEmpty(
+    board: Board,
+    start: Point,
+    end: Point
+  ): boolean {
     if (start.x !== end.x) return false;
 
     const min = Math.min(start.y, end.y);
@@ -18,8 +24,8 @@ export abstract class CellChecker {
 
   public static isHorizontalEmpty(
     board: Board,
-    start: Cell,
-    end: Cell
+    start: Point,
+    end: Point
   ): boolean {
     if (start.y !== end.y) return false;
 
@@ -33,7 +39,11 @@ export abstract class CellChecker {
     return true;
   }
 
-  public static isDiagonalEmpty(board: Board, start: Cell, end: Cell): boolean {
+  public static isDiagonalEmpty(
+    board: Board,
+    start: Point,
+    end: Point
+  ): boolean {
     const absX = Math.abs(start.x - end.x);
     const absY = Math.abs(start.y - end.y);
     if (absX !== absY) return false;
@@ -54,18 +64,27 @@ export abstract class CellChecker {
     return !!(figure1 && figure2 && figure1.color !== figure2.color);
   }
 
-  public static isKingUderCheck(board: Board, color: Colors): boolean {
-    const king = board.getKing(color);
+  public static isKingUderCheck(board: Board, king: Figure | null): boolean {
+    if (!king) return false;
+
+    const color = king.color;
     const enemyColor = color === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
 
     const enemyCells = board.getCellsWithFigure(enemyColor);
-    console.log(enemyCells);
 
-    // for (const enemyCell of enemyCells) {
-    // if (enemyCell.getFigure()?.canMove(board, enemyCell, king)) {
-    // return true;
-    // }
-    // }
+    for (const enemyCell of enemyCells) {
+      if (
+        enemyCell
+          .getFigure()
+          ?.canMove(
+            board,
+            { x: enemyCell.x, y: enemyCell.y },
+            { x: king.x, y: king.y }
+          )
+      ) {
+        return true;
+      }
+    }
 
     return false;
   }

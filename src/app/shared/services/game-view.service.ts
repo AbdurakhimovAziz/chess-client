@@ -28,6 +28,7 @@ export class GameViewService {
     const cells = board.getCells();
     for (let row of cells) {
       for (let cell of row) {
+        // TODO: check if move doesn't put king in check
         cell.setAvailable(
           !!selectedCell?.getFigure()?.canMove(board, selectedCell, cell)
         );

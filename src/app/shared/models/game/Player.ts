@@ -16,4 +16,8 @@ export class Player {
   public addCapturedFigure(figure: Figure): void {
     this.capturedFigures.push(figure);
   }
+
+  public clearCapturedFigures(): void {
+    this.capturedFigures = [];
+  }
 }

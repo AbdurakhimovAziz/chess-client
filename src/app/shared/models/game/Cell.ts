@@ -30,6 +30,10 @@ export class Cell {
 
   public setFigure(figure: Figure | null) {
     this.figure = figure;
+    if (this.figure) {
+      this.figure.x = this.x;
+      this.figure.y = this.y;
+    }
   }
 
   public isEmpty(): boolean {

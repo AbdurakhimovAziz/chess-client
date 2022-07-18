@@ -2,6 +2,8 @@ import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Cell } from 'src/app/shared/models/game/Cell';
+import { Colors } from 'src/app/shared/models/game/Colors';
+import { Figure } from 'src/app/shared/models/game/figures/Figure';
 import { FigureTypes } from 'src/app/shared/models/game/figures/Figure-types';
 import { Player } from 'src/app/shared/models/game/Player';
 import { GameViewService } from 'src/app/shared/services/game-view.service';
@@ -37,12 +39,7 @@ export class BoardComponent implements OnInit {
     const board = this.board;
     const activeCell = this.getActiveCell();
 
-    if (
-      activeCell &&
-      activeCell !== cell &&
-      cell.isAvailable() &&
-      !CellChecker.isKingUderCheck(board, this.currentPlayer.color)
-    ) {
+    if (activeCell && activeCell !== cell && cell.isAvailable()) {
       this.gameService.moveFigure(activeCell, cell);
       this.gameViewService.setActiveCell(null);
       this.gameService.swapCurrentPlayer();
@@ -85,7 +82,9 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  public isTargetKing(cell: Cell): boolean {
-    return cell.getFigure()?.type === FigureTypes.KING;
+  public isKingUnderCheck(figure: Figure | null): boolean {
+    if (!figure || figure.type !== FigureTypes.KING) return false;
+
+    return CellChecker.isKingUderCheck(this.board, figure);
   }
 }
