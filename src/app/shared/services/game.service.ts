@@ -3,12 +3,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
 import { Colors } from '../models/game/Colors';
+import { Figure } from '../models/game/figures/Figure';
 import { FigureTypes } from '../models/game/figures/Figure-types';
 import { King } from '../models/game/figures/King';
 import { Pawn } from '../models/game/figures/Pawn';
 import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
-import { CellChecker } from '../utils/cell-checker';
+import { GameViewService } from './game-view.service';
 import { MoveService } from './move.service';
 
 @Injectable({
@@ -24,15 +25,18 @@ export class GameService {
   private whiteKing: King | null = null;
   private blackKing: King | null = null;
 
-  constructor(private moveService: MoveService) {
+  constructor(
+    private moveService: MoveService,
+    private gameViewService: GameViewService
+  ) {
     this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
     this.currentPlayer$ = this.currentPlayerSubject.asObservable();
     this.moveService.lastMove$.subscribe((move: Move | null) => {
       this.whiteKing?.setUnderCheck(
-        CellChecker.isKingUderCheck(this.board, this.whiteKing)
+        this.isKingUderCheck(this.board, this.whiteKing)
       );
       this.blackKing?.setUnderCheck(
-        CellChecker.isKingUderCheck(this.board, this.blackKing)
+        this.isKingUderCheck(this.board, this.blackKing)
       );
     });
   }
@@ -55,6 +59,7 @@ export class GameService {
   public restart(): void {
     this.board = new Board();
     this.board.init();
+    this.gameViewService.setBoard(this.board);
     this.whitePlayer.clearCapturedFigures();
     this.blackPlayer.clearCapturedFigures();
     this.whiteKing = this.board.getKing(Colors.WHITE);
@@ -63,6 +68,14 @@ export class GameService {
 
   public getBoard(): Board {
     return this.board;
+  }
+
+  public handleMove(start: Cell | null, end: Cell): void {
+    if (start && start !== end && end.isAvailable()) {
+      this.moveFigure(start, end);
+      this.gameViewService.setActiveCell(null);
+    } else if (!end.isEmpty() && this.isRightTurn(end.getFigure()?.color!))
+      this.gameViewService.setActiveCell(end);
   }
 
   public moveFigure(start: Cell, end: Cell): void {
@@ -84,5 +97,29 @@ export class GameService {
 
   public isRightTurn(color: Colors): boolean {
     return color === this.getCurrentPlayer().color;
+  }
+
+  public isKingUderCheck(board: Board, king: Figure | null): boolean {
+    if (!king) return false;
+
+    const color = king.color;
+    const enemyColor = color === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+    const enemyCells = board.getCellsWithFigure(enemyColor);
+
+    for (const enemyCell of enemyCells) {
+      if (
+        enemyCell
+          .getFigure()
+          ?.canMove(
+            board,
+            { x: enemyCell.x, y: enemyCell.y },
+            { x: king.x, y: king.y }
+          )
+      ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

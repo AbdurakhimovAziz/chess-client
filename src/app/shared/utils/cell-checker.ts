@@ -63,28 +63,4 @@ export abstract class CellChecker {
     const figure2 = cell2.getFigure();
     return !!(figure1 && figure2 && figure1.color !== figure2.color);
   }
-
-  public static isKingUderCheck(board: Board, king: Figure | null): boolean {
-    if (!king) return false;
-
-    const color = king.color;
-    const enemyColor = color === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
-    const enemyCells = board.getCellsWithFigure(enemyColor);
-
-    for (const enemyCell of enemyCells) {
-      if (
-        enemyCell
-          .getFigure()
-          ?.canMove(
-            board,
-            { x: enemyCell.x, y: enemyCell.y },
-            { x: king.x, y: king.y }
-          )
-      ) {
-        return true;
-      }
-    }
-
-    return false;
-  }
 }

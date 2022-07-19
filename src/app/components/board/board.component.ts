@@ -9,7 +9,6 @@ import { Player } from 'src/app/shared/models/game/Player';
 import { GameViewService } from 'src/app/shared/services/game-view.service';
 import { GameService } from 'src/app/shared/services/game.service';
 import { MoveService } from 'src/app/shared/services/move.service';
-import { CellChecker } from 'src/app/shared/utils/cell-checker';
 
 @Component({
   selector: 'app-board',
@@ -43,15 +42,7 @@ export class BoardComponent implements OnInit {
 
   public handleMove(cell: Cell): void {
     const activeCell = this.getActiveCell();
-
-    if (activeCell && activeCell !== cell && cell.isAvailable()) {
-      this.gameService.moveFigure(activeCell, cell);
-      this.gameViewService.setActiveCell(null);
-    } else if (
-      !cell.isEmpty() &&
-      this.gameService.isRightTurn(cell.getFigure()?.color!)
-    )
-      this.gameViewService.setActiveCell(cell);
+    this.gameService.handleMove(activeCell, cell);
   }
 
   public getActiveCell(): Cell | null {
@@ -90,6 +81,6 @@ export class BoardComponent implements OnInit {
   public isKingUnderCheck(figure: Figure | null): boolean {
     if (!figure || figure.type !== FigureTypes.KING) return false;
 
-    return CellChecker.isKingUderCheck(this.board, figure);
+    return this.gameService.isKingUderCheck(this.board, figure);
   }
 }

@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
+import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
-import { GameService } from './game.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameViewService {
+  private board!: Board;
+
   private activeCellSubject: BehaviorSubject<Cell | null>;
   public activeCell$!: Observable<Cell | null>;
 
   private isDraggingSubject: BehaviorSubject<boolean>;
   public isDragging$!: Observable<boolean>;
 
-  constructor(private gameService: GameService) {
+  constructor() {
     this.activeCellSubject = new BehaviorSubject<Cell | null>(null);
     this.activeCell$ = this.activeCellSubject
       .asObservable()
@@ -24,7 +26,7 @@ export class GameViewService {
   }
 
   public highlightCells(selectedCell: Cell | null): void {
-    const board = this.gameService.getBoard();
+    const board = this.board;
     const cells = board.getCells();
     for (let row of cells) {
       for (let cell of row) {
@@ -34,6 +36,14 @@ export class GameViewService {
         );
       }
     }
+  }
+
+  public getBoard(): Board {
+    return this.board;
+  }
+
+  public setBoard(board: Board): void {
+    this.board = board;
   }
 
   public setActiveCell(cell: Cell | null): void {
