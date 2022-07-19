@@ -17,7 +17,6 @@ export class MainComponent implements OnInit {
   constructor(private gameService: GameService) {}
 
   ngOnInit(): void {
-    this.gameService.restart();
     this.board = this.gameService.getBoard();
   }
 }

@@ -10,6 +10,7 @@ import { Pawn } from '../models/game/figures/Pawn';
 import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
 import { GameViewService } from './game-view.service';
+import { MoveSimulatorService } from './move-simulator.service';
 import { MoveService } from './move.service';
 
 @Injectable({
@@ -27,11 +28,15 @@ export class GameService {
 
   constructor(
     private moveService: MoveService,
-    private gameViewService: GameViewService
+    private gameViewService: GameViewService,
+    private moveSimulatorService: MoveSimulatorService
   ) {
+    this.restart();
     this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
     this.currentPlayer$ = this.currentPlayerSubject.asObservable();
     this.moveService.lastMove$.subscribe((move: Move | null) => {
+      this.moveSimulatorService.setCopyBoard(this.board);
+
       this.whiteKing?.setUnderCheck(
         this.isKingUderCheck(this.board, this.whiteKing)
       );
@@ -81,15 +86,14 @@ export class GameService {
   public moveFigure(start: Cell, end: Cell): void {
     const figure = start.getFigure();
     if (figure) {
-      const move = new Move(this.getCurrentPlayer(), start, end);
       const targetFigure = end.getFigure();
       if (targetFigure?.type !== FigureTypes.KING) {
-        targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
-
         end.setFigure(figure);
         start.setFigure(null);
 
         if (figure instanceof Pawn) figure.setFirstMove(false);
+        const move = new Move(this.getCurrentPlayer(), start, end);
+        targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
         this.moveService.addMove(move);
       }
     }

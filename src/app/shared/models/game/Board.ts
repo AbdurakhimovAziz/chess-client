@@ -110,4 +110,18 @@ export class Board {
       (figure) => figure.color === color && figure instanceof King
     ) as King;
   }
+
+  public getCopy(): Board {
+    const newBoard = new Board();
+    newBoard.cells = this.cells.map((row) =>
+      row.map((cell) => {
+        const newCell = new Cell(cell.x, cell.y, cell.color);
+        newCell.setFigure(cell.getFigure());
+        return newCell;
+      })
+    );
+    newBoard.figures = [...this.figures];
+
+    return newBoard;
+  }
 }

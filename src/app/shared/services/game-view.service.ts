@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
+import { MoveSimulatorService } from './move-simulator.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,7 @@ export class GameViewService {
   private isDraggingSubject: BehaviorSubject<boolean>;
   public isDragging$!: Observable<boolean>;
 
-  constructor() {
+  constructor(private moveSimulatorService: MoveSimulatorService) {
     this.activeCellSubject = new BehaviorSubject<Cell | null>(null);
     this.activeCell$ = this.activeCellSubject
       .asObservable()
@@ -30,9 +31,9 @@ export class GameViewService {
     const cells = board.getCells();
     for (let row of cells) {
       for (let cell of row) {
-        // TODO: check if move doesn't put king in check
         cell.setAvailable(
-          !!selectedCell?.getFigure()?.canMove(board, selectedCell, cell)
+          !!selectedCell?.getFigure()?.canMove(board, selectedCell, cell) &&
+            this.moveSimulatorService.isValidMove(selectedCell, cell)
         );
       }
     }
