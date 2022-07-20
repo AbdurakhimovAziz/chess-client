@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
+import { GameService } from './game.service';
 import { MoveSimulatorService } from './move-simulator.service';
 
 @Injectable({
@@ -16,7 +17,10 @@ export class GameViewService {
   private isDraggingSubject: BehaviorSubject<boolean>;
   public isDragging$!: Observable<boolean>;
 
-  constructor(private moveSimulatorService: MoveSimulatorService) {
+  constructor(
+    private moveSimulatorService: MoveSimulatorService,
+    private injector: Injector
+  ) {
     this.activeCellSubject = new BehaviorSubject<Cell | null>(null);
     this.activeCell$ = this.activeCellSubject
       .asObservable()
@@ -27,12 +31,15 @@ export class GameViewService {
   }
 
   public highlightCells(selectedCell: Cell | null): void {
+    const gameService = this.injector.get(GameService);
     const board = this.board;
     const cells = board.getCells();
+
     for (let row of cells) {
       for (let cell of row) {
         cell.setAvailable(
-          !!selectedCell?.getFigure()?.canMove(board, selectedCell, cell) &&
+          (!!selectedCell?.getFigure()?.canMove(board, selectedCell, cell) ||
+            gameService.isEnpassantPossible(selectedCell, cell)) &&
             this.moveSimulatorService.isValidMove(selectedCell, cell)
         );
       }

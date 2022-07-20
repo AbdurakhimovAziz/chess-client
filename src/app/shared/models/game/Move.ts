@@ -7,7 +7,7 @@ export class Move {
   private capturedFigure: Figure | null;
   private castlingMove: boolean = false;
 
-  constructor(private player: Player, private start: Cell, private end: Cell) {
+  constructor(public player: Player, public start: Cell, public end: Cell) {
     this.movedFigure = start.getFigure();
     this.capturedFigure = end.getFigure();
   }
@@ -18,5 +18,13 @@ export class Move {
 
   public setCastlingMove(castlingMove: boolean): void {
     this.castlingMove = castlingMove;
+  }
+
+  public setCapturedFigure(figure: Figure | null): void {
+    this.capturedFigure = figure;
+  }
+
+  public getMoveedFigure(): Figure | null {
+    return this.movedFigure;
   }
 }

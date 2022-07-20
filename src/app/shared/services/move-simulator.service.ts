@@ -20,13 +20,14 @@ export class MoveSimulatorService {
     const startCopy = this.copyBoard.getCell(start.x, start.y);
     const endCopy = this.copyBoard.getCell(end.x, end.y);
     const color = startCopy.getFigure()?.color;
+    const gameService = this.injector.get(GameService);
 
     if (
-      startCopy &&
-      startCopy !== endCopy &&
-      startCopy.getFigure()?.canMove(this.copyBoard, startCopy, endCopy)
+      (startCopy &&
+        startCopy !== endCopy &&
+        startCopy.getFigure()?.canMove(this.copyBoard, startCopy, endCopy)) ||
+      gameService.isEnpassantPossible(startCopy, endCopy)
     ) {
-      const gameService = this.injector.get(GameService);
       const figure = startCopy.getFigure();
       const king = color && this.copyBoard.getKing(color);
 
@@ -42,6 +43,7 @@ export class MoveSimulatorService {
             !king || !gameService.isKingUderCheck(this.copyBoard, king);
           this.setCopyBoard(boardSnap);
 
+          console.log('isValidMove', isValid);
           return isValid;
         }
       }

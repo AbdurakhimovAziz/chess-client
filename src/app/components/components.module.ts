@@ -11,7 +11,13 @@ import { BoardComponent } from './board/board.component';
 import { CellComponent } from './cell/cell.component';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, MainComponent, BoardComponent, CellComponent],
+  declarations: [
+    LoginComponent,
+    RegisterComponent,
+    MainComponent,
+    BoardComponent,
+    CellComponent,
+  ],
   imports: [
     CommonModule,
     AppMaterialModule,

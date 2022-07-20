@@ -9,6 +9,7 @@ import { King } from '../models/game/figures/King';
 import { Pawn } from '../models/game/figures/Pawn';
 import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
+import { Point } from '../models/game/Point';
 import { GameViewService } from './game-view.service';
 import { MoveSimulatorService } from './move-simulator.service';
 import { MoveService } from './move.service';
@@ -25,6 +26,7 @@ export class GameService {
   private blackPlayer: Player = new Player(Colors.BLACK);
   private whiteKing: King | null = null;
   private blackKing: King | null = null;
+  private enPassantPawn: Pawn | null = null;
 
   constructor(
     private moveService: MoveService,
@@ -43,6 +45,8 @@ export class GameService {
       this.blackKing?.setUnderCheck(
         this.isKingUderCheck(this.board, this.blackKing)
       );
+
+      this.handleEnpassant(move);
     });
   }
 
@@ -86,13 +90,25 @@ export class GameService {
   public moveFigure(start: Cell, end: Cell): void {
     const figure = start.getFigure();
     if (figure) {
-      const targetFigure = end.getFigure();
+      let targetFigure = end.getFigure();
       if (targetFigure?.type !== FigureTypes.KING) {
+        const move = new Move(this.getCurrentPlayer(), start, end);
+
+        if (figure instanceof Pawn) {
+          figure.isFirstMove() && figure.setFirstMove(false);
+
+          if (this.isEnpassantPossible(start, end)) {
+            this.board
+              .getCell(this.enPassantPawn!.x, this.enPassantPawn!.y)
+              .setFigure(null);
+            targetFigure = this.enPassantPawn;
+            move.setCapturedFigure(targetFigure);
+          }
+        }
+
         end.setFigure(figure);
         start.setFigure(null);
 
-        if (figure instanceof Pawn) figure.setFirstMove(false);
-        const move = new Move(this.getCurrentPlayer(), start, end);
         targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
         this.moveService.addMove(move);
       }
@@ -122,6 +138,42 @@ export class GameService {
       ) {
         return true;
       }
+    }
+
+    return false;
+  }
+
+  public handleEnpassant(move: Move | null): void {
+    const figure = move?.getMoveedFigure();
+    if (
+      move &&
+      figure?.type === FigureTypes.PAWN &&
+      Math.abs(move.start.y - move.end.y) === 2
+    ) {
+      this.setEnpassantPawn(figure as Pawn);
+    } else {
+      this.setEnpassantPawn(null);
+    }
+  }
+
+  public setEnpassantPawn(pawn: Pawn | null): void {
+    this.enPassantPawn = pawn;
+  }
+
+  public getEnpassantPawn(): Pawn | null {
+    return this.enPassantPawn;
+  }
+
+  public isEnpassantPossible(start: Point | null, end: Point): boolean {
+    if (!start || !this.enPassantPawn) return false;
+    const figure = this.board.getCell(start.x, start.y).getFigure();
+    if (
+      figure?.type === FigureTypes.PAWN &&
+      this.enPassantPawn.y === start.y &&
+      end.y === start.y - this.enPassantPawn?.direction &&
+      end.x === this.enPassantPawn.x
+    ) {
+      return true;
     }
 
     return false;
