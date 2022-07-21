@@ -9,7 +9,6 @@ export class Pawn extends Figure {
   private firstMove: boolean = true;
   public readonly direction: number = this.color === Colors.WHITE ? -1 : 1;
   private firstStepDirection: number = this.direction * 2;
-  // TODO: implement en passant move
 
   constructor(color: Colors, x: number, y: number) {
     super(color, x, y);
@@ -22,7 +21,6 @@ export class Pawn extends Figure {
 
     const startCell = board.getCell(start.x, start.y);
     const endCell = board.getCell(end.x, end.y);
-    // console.log(this.isEnPassantMove(board, start, end));
 
     if (
       (end.y === start.y + this.direction ||

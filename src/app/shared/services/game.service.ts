@@ -5,13 +5,11 @@ import { Cell } from '../models/game/Cell';
 import { Colors } from '../models/game/Colors';
 import { Figure } from '../models/game/figures/Figure';
 import { FigureTypes } from '../models/game/figures/Figure-types';
-import { King } from '../models/game/figures/King';
 import { Pawn } from '../models/game/figures/Pawn';
 import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
 import { Point } from '../models/game/Point';
 import { GameViewService } from './game-view.service';
-import { MoveSimulatorService } from './move-simulator.service';
 import { MoveService } from './move.service';
 
 @Injectable({
@@ -24,30 +22,15 @@ export class GameService {
   public currentPlayer$: Observable<Player>;
   private whitePlayer: Player = new Player(Colors.WHITE);
   private blackPlayer: Player = new Player(Colors.BLACK);
-  private whiteKing: King | null = null;
-  private blackKing: King | null = null;
   private enPassantPawn: Pawn | null = null;
 
   constructor(
     private moveService: MoveService,
-    private gameViewService: GameViewService,
-    private moveSimulatorService: MoveSimulatorService
+    private gameViewService: GameViewService
   ) {
     this.restart();
     this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
     this.currentPlayer$ = this.currentPlayerSubject.asObservable();
-    this.moveService.lastMove$.subscribe((move: Move | null) => {
-      this.moveSimulatorService.setCopyBoard(this.board);
-
-      this.whiteKing?.setUnderCheck(
-        this.isKingUderCheck(this.board, this.whiteKing)
-      );
-      this.blackKing?.setUnderCheck(
-        this.isKingUderCheck(this.board, this.blackKing)
-      );
-
-      this.handleEnpassant(move);
-    });
   }
 
   public getCurrentPlayer(): Player {
@@ -71,8 +54,6 @@ export class GameService {
     this.gameViewService.setBoard(this.board);
     this.whitePlayer.clearCapturedFigures();
     this.blackPlayer.clearCapturedFigures();
-    this.whiteKing = this.board.getKing(Colors.WHITE);
-    this.blackKing = this.board.getKing(Colors.BLACK);
   }
 
   public getBoard(): Board {
@@ -98,9 +79,11 @@ export class GameService {
           figure.isFirstMove() && figure.setFirstMove(false);
 
           if (this.isEnpassantPossible(start, end)) {
-            this.board
-              .getCell(this.enPassantPawn!.x, this.enPassantPawn!.y)
-              .setFigure(null);
+            this.board.setFigureInCell(
+              this.enPassantPawn!.x,
+              this.enPassantPawn!.y,
+              null
+            );
             targetFigure = this.enPassantPawn;
             move.setCapturedFigure(targetFigure);
           }
@@ -119,7 +102,7 @@ export class GameService {
     return color === this.getCurrentPlayer().color;
   }
 
-  public isKingUderCheck(board: Board, king: Figure | null): boolean {
+  public isKingUderCheck(board: Board, king: Figure | undefined): boolean {
     if (!king) return false;
 
     const color = king.color;
@@ -143,7 +126,7 @@ export class GameService {
     return false;
   }
 
-  public handleEnpassant(move: Move | null): void {
+  public checkEnpassant(move: Move | null): void {
     const figure = move?.getMoveedFigure();
     if (
       move &&
@@ -160,13 +143,9 @@ export class GameService {
     this.enPassantPawn = pawn;
   }
 
-  public getEnpassantPawn(): Pawn | null {
-    return this.enPassantPawn;
-  }
-
   public isEnpassantPossible(start: Point | null, end: Point): boolean {
     if (!start || !this.enPassantPawn) return false;
-    const figure = this.board.getCell(start.x, start.y).getFigure();
+    const figure = this.board.getFIgureByPosition(start.x, start.y);
     if (
       figure?.type === FigureTypes.PAWN &&
       this.enPassantPawn.y === start.y &&
@@ -178,4 +157,24 @@ export class GameService {
 
     return false;
   }
+
+  // public isCheckMate(board: Board): boolean {
+  //   const king = board.getKing(this.getCurrentPlayer().color);
+  //   if (this.isKingUderCheck(board, king)) {
+  //     const moves = this.moveSimulatorService.getAllMoves(board);
+  //     for (const move of moves) {
+  //       if (
+  //         move.getMoveedFigure()?.color === this.getCurrentPlayer().color &&
+  //         !this.isKingUderCheck(
+  //           this.moveSimulatorService.simulateMove(board, move),
+  //           king
+  //         )
+  //       ) {
+  //         return false;
+  //       }
+  //     }
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

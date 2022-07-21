@@ -38,6 +38,14 @@ export class Board {
     return this.cells;
   }
 
+  public getFIgureByPosition(x: number, y: number): Figure | null {
+    return this.getCell(x, y).getFigure();
+  }
+
+  public setFigureInCell(x: number, y: number, figure: Figure | null): void {
+    this.getCell(x, y).setFigure(figure);
+  }
+
   public isCellEmpty(x: number, y: number): boolean {
     return this.getCell(x, y).isEmpty();
   }

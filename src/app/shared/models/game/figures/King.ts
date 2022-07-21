@@ -5,7 +5,7 @@ import { Figure } from './Figure';
 import { FigureTypes } from './Figure-types';
 
 export class King extends Figure {
-  private underCheck: boolean = false;
+  private inCheck: boolean = false;
 
   // TODO: implement castling
   constructor(color: Colors, x: number, y: number) {
@@ -19,18 +19,17 @@ export class King extends Figure {
 
     const dx = Math.abs(end.x - start.x);
     const dy = Math.abs(end.y - start.y);
-    // TODO: check if move will not result a check
 
     return (
       (dx === 1 && dy === 1) || (dx === 0 && dy === 1) || (dx === 1 && dy === 0)
     );
   }
 
-  public isUnderCheck(): boolean {
-    return this.underCheck;
+  public isInCheck(): boolean {
+    return this.inCheck;
   }
 
-  public setUnderCheck(checked: boolean): void {
-    this.underCheck = checked;
+  public setInCheck(checked: boolean): void {
+    this.inCheck = checked;
   }
 }

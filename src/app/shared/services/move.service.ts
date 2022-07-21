@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Move } from '../models/game/Move';
 
 @Injectable({
@@ -7,11 +7,11 @@ import { Move } from '../models/game/Move';
 })
 export class MoveService {
   private moves: Move[] = [];
-  private lastMoveSubject: BehaviorSubject<Move | null>;
-  public lastMove$: Observable<Move | null>;
+  private lastMoveSubject: Subject<Move>;
+  public lastMove$: Observable<Move>;
 
   constructor() {
-    this.lastMoveSubject = new BehaviorSubject<Move | null>(null);
+    this.lastMoveSubject = new Subject<Move>();
     this.lastMove$ = this.lastMoveSubject.asObservable();
   }
 

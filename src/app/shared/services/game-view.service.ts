@@ -40,14 +40,10 @@ export class GameViewService {
         cell.setAvailable(
           (!!selectedCell?.getFigure()?.canMove(board, selectedCell, cell) ||
             gameService.isEnpassantPossible(selectedCell, cell)) &&
-            this.moveSimulatorService.isValidMove(selectedCell, cell)
+            !this.moveSimulatorService.willCauseCheck(selectedCell, cell)
         );
       }
     }
-  }
-
-  public getBoard(): Board {
-    return this.board;
   }
 
   public setBoard(board: Board): void {

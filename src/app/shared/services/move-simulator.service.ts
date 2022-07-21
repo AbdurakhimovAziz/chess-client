@@ -1,10 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
-import { Colors } from '../models/game/Colors';
 import { FigureTypes } from '../models/game/figures/Figure-types';
-import { Pawn } from '../models/game/figures/Pawn';
-import { Move } from '../models/game/Move';
 import { GameService } from './game.service';
 
 @Injectable({
@@ -15,7 +12,7 @@ export class MoveSimulatorService {
 
   constructor(private injector: Injector) {}
 
-  public isValidMove(start: Cell | null, end: Cell): boolean {
+  public willCauseCheck(start: Cell | null, end: Cell): boolean {
     if (!start) return false;
     const startCopy = this.copyBoard.getCell(start.x, start.y);
     const endCopy = this.copyBoard.getCell(end.x, end.y);
@@ -39,12 +36,9 @@ export class MoveSimulatorService {
 
           endCopy.setFigure(figure);
           startCopy.setFigure(null);
-          const isValid =
-            !king || !gameService.isKingUderCheck(this.copyBoard, king);
+          const isCheck = gameService.isKingUderCheck(this.copyBoard, king);
           this.setCopyBoard(boardSnap);
-
-          console.log('isValidMove', isValid);
-          return isValid;
+          return isCheck;
         }
       }
     }

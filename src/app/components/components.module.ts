@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from '../app-routing.module';
 import { BoardComponent } from './board/board.component';
 import { CellComponent } from './cell/cell.component';
+import { GameComponent } from './game/game.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { CellComponent } from './cell/cell.component';
     MainComponent,
     BoardComponent,
     CellComponent,
+    GameComponent,
   ],
   imports: [
     CommonModule,

@@ -1,52 +1,30 @@
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CELL_WIDTH } from 'src/app/shared/constants';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Cell } from 'src/app/shared/models/game/Cell';
-import { Figure } from 'src/app/shared/models/game/figures/Figure';
-import { FigureTypes } from 'src/app/shared/models/game/figures/Figure-types';
-import { Player } from 'src/app/shared/models/game/Player';
+import { King } from 'src/app/shared/models/game/figures/King';
 import { GameViewService } from 'src/app/shared/services/game-view.service';
 import { GameService } from 'src/app/shared/services/game.service';
-import { MoveService } from 'src/app/shared/services/move.service';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent {
   @Input() board!: Board;
-
-  private currentPlayer!: Player;
+  @Output() public onDragStarted = new EventEmitter<Cell>();
+  @Output() public onDragEnded = new EventEmitter<CdkDragEnd>();
 
   constructor(
     private gameService: GameService,
-    private gameViewService: GameViewService,
-    private moveService: MoveService
+    private gameViewService: GameViewService
   ) {}
-
-  ngOnInit(): void {
-    this.gameViewService.activeCell$.subscribe((cell) =>
-      this.gameViewService.highlightCells(cell)
-    );
-
-    this.gameService.currentPlayer$.subscribe(
-      (player) => (this.currentPlayer = player)
-    );
-
-    this.moveService.lastMove$.subscribe((move) => {
-      if (move) this.gameService.swapCurrentPlayer();
-    });
-  }
 
   public handleMove(cell: Cell): void {
     const activeCell = this.getActiveCell();
     this.gameService.handleMove(activeCell, cell);
-  }
-
-  public getActiveCell(): Cell | null {
-    return this.gameViewService.getActiveCell();
   }
 
   public dragStarted(cell: Cell) {
@@ -78,9 +56,16 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  public isKingUnderCheck(figure: Figure | null): boolean {
-    if (!figure || figure.type !== FigureTypes.KING) return false;
+  public isKingUnderCheck(cell: Cell | null): boolean {
+    if (!cell) return false;
 
-    return this.gameService.isKingUderCheck(this.board, figure);
+    const figure = cell.getFigure();
+    if (!figure || !(figure instanceof King)) return false;
+
+    return cell.x === figure.x && cell.y === figure.y && figure.isInCheck();
+  }
+
+  public getActiveCell(): Cell | null {
+    return this.gameViewService.getActiveCell();
   }
 }
