@@ -6,6 +6,8 @@ import { Figure } from './Figure';
 import { FigureTypes } from './Figure-types';
 
 export class Rook extends Figure {
+  private moved = false;
+
   constructor(color: Colors, x: number, y: number) {
     super(color, x, y);
     this.type = FigureTypes.ROOK;
@@ -20,5 +22,13 @@ export class Rook extends Figure {
     )
       return true;
     return false;
+  }
+
+  public isMoved(): boolean {
+    return this.moved;
+  }
+
+  public setMoved(moved: boolean): void {
+    this.moved = moved;
   }
 }

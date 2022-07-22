@@ -5,7 +5,9 @@ import { Cell } from '../models/game/Cell';
 import { Colors } from '../models/game/Colors';
 import { Figure } from '../models/game/figures/Figure';
 import { FigureTypes } from '../models/game/figures/Figure-types';
+import { King } from '../models/game/figures/King';
 import { Pawn } from '../models/game/figures/Pawn';
+import { Rook } from '../models/game/figures/Rook';
 import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
 import { Point } from '../models/game/Point';
@@ -69,33 +71,28 @@ export class GameService {
   }
 
   public moveFigure(start: Cell, end: Cell): void {
+    const move = new Move(this.getCurrentPlayer(), start, end);
+    const targetFigure = this.performMove(this.board, start, end);
+    targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
+    move.setCapturedFigure(targetFigure);
+    this.moveService.addMove(move);
+  }
+
+  public performMove(board: Board, start: Cell, end: Cell): Figure | null {
     const figure = start.getFigure();
-    if (figure) {
-      let targetFigure = end.getFigure();
-      if (targetFigure?.type !== FigureTypes.KING) {
-        const move = new Move(this.getCurrentPlayer(), start, end);
+    let targetFigure = end.getFigure();
 
-        if (figure instanceof Pawn) {
-          figure.isFirstMove() && figure.setFirstMove(false);
-
-          if (this.isEnpassantPossible(start, end)) {
-            this.board.setFigureInCell(
-              this.enPassantPawn!.x,
-              this.enPassantPawn!.y,
-              null
-            );
-            targetFigure = this.enPassantPawn;
-            move.setCapturedFigure(targetFigure);
-          }
-        }
-
-        end.setFigure(figure);
-        start.setFigure(null);
-
-        targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
-        this.moveService.addMove(move);
-      }
+    if (this.isEnpassantPossible(start, end)) {
+      board.setFigureInCell(this.enPassantPawn!.x, this.enPassantPawn!.y, null);
+      targetFigure = board.getFigureByPosition(
+        this.enPassantPawn!.x,
+        this.enPassantPawn!.y
+      );
     }
+
+    end.setFigure(figure);
+    start.setFigure(null);
+    return targetFigure;
   }
 
   public isRightTurn(color: Colors): boolean {
@@ -107,18 +104,15 @@ export class GameService {
 
     const color = king.color;
     const enemyColor = color === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
-    const enemyCells = board.getCellsWithFigure(enemyColor);
+    const enemyFigures = board.getFiguresByColor(enemyColor);
 
-    for (const enemyCell of enemyCells) {
-      return !!enemyCell
-        .getFigure()
-        ?.canMove(
-          board,
-          { x: enemyCell.x, y: enemyCell.y },
-          { x: king.x, y: king.y }
-        );
-    }
-    return false;
+    return enemyFigures.some((figure) => {
+      return figure.canMove(
+        board,
+        { x: figure.x, y: figure.y },
+        { x: king.x, y: king.y }
+      );
+    });
   }
 
   public checkEnpassant(move: Move | null): void {
@@ -144,7 +138,7 @@ export class GameService {
 
   public isEnpassantPossible(start: Point | null, end: Point): boolean {
     if (!start || !this.enPassantPawn) return false;
-    const figure = this.board.getFIgureByPosition(start.x, start.y);
+    const figure = this.board.getFigureByPosition(start.x, start.y);
     if (
       figure?.type === FigureTypes.PAWN &&
       this.enPassantPawn.y === start.y &&

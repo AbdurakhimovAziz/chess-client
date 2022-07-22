@@ -6,9 +6,8 @@ import { Figure } from './Figure';
 import { FigureTypes } from './Figure-types';
 
 export class Pawn extends Figure {
-  private firstMove: boolean = true;
+  private moved = false;
   public readonly direction: number = this.color === Colors.WHITE ? -1 : 1;
-  private firstStepDirection: number = this.direction * 2;
 
   constructor(color: Colors, x: number, y: number) {
     super(color, x, y);
@@ -24,8 +23,8 @@ export class Pawn extends Figure {
 
     if (
       (end.y === start.y + this.direction ||
-        (this.firstMove &&
-          end.y === start.y + this.firstStepDirection &&
+        (!this.moved &&
+          end.y === start.y + this.direction * 2 &&
           board.isCellEmpty(end.x, end.y - this.direction))) &&
       end.x === start.x &&
       board.isCellEmpty(end.x, end.y)
@@ -44,11 +43,11 @@ export class Pawn extends Figure {
     return false;
   }
 
-  public isFirstMove(): boolean {
-    return this.firstMove;
+  public isMoved(): boolean {
+    return this.moved;
   }
 
-  public setFirstMove(firstMove: boolean): void {
-    this.firstMove = firstMove;
+  public setMoved(moved: boolean): void {
+    this.moved = moved;
   }
 }

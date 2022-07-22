@@ -3,6 +3,8 @@ import { Subscription } from 'rxjs';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Colors } from 'src/app/shared/models/game/Colors';
 import { King } from 'src/app/shared/models/game/figures/King';
+import { Pawn } from 'src/app/shared/models/game/figures/Pawn';
+import { Rook } from 'src/app/shared/models/game/figures/Rook';
 import { Move } from 'src/app/shared/models/game/Move';
 import { Player } from 'src/app/shared/models/game/Player';
 import { GameViewService } from 'src/app/shared/services/game-view.service';
@@ -55,7 +57,21 @@ export class GameComponent implements OnInit, OnDestroy {
     );
 
     this.addSubscription(
-      this.moveService.lastMove$.subscribe((move: Move | null) => {
+      this.moveService.lastMove$.subscribe((move: Move) => {
+        const figure = move.getMoveedFigure();
+        if (
+          figure instanceof Pawn ||
+          figure instanceof King ||
+          figure instanceof Rook
+        ) {
+          !figure.isMoved() && figure.setMoved(true);
+        }
+
+        const figures = this.board.getFigures();
+        this.board.setFigures(
+          figures.filter((figure) => figure !== move.getCapturedFigure())
+        );
+
         this.moveSimulatorService.setBoardCopy(this.board);
 
         this.whiteKing?.setInCheck(

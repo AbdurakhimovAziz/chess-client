@@ -38,7 +38,7 @@ export class Board {
     return this.cells;
   }
 
-  public getFIgureByPosition(x: number, y: number): Figure | null {
+  public getFigureByPosition(x: number, y: number): Figure | null {
     return this.getCell(x, y).getFigure();
   }
 
@@ -57,6 +57,44 @@ export class Board {
     this.addKnights();
     this.addRooks();
     this.addQueens();
+  }
+
+  public setFigures(figures: Figure[]): void {
+    this.figures = figures;
+  }
+
+  public getFigures(): Figure[] {
+    return this.figures;
+  }
+
+  public getFiguresByColor(color: Colors): Figure[] {
+    return this.figures.filter((figure) => figure.color === color);
+  }
+
+  public getKing(color: Colors): King {
+    return this.figures.find(
+      (figure) => figure.color === color && figure instanceof King
+    ) as King;
+  }
+
+  public getCopy(): Board {
+    const newBoard = new Board();
+    newBoard.cells = this.cells.map((row) =>
+      row.map((cell) => {
+        const newCell = new Cell(cell.x, cell.y, cell.color);
+        newCell.setFigure(cell.getFigure());
+        return newCell;
+      })
+    );
+    newBoard.figures = [...this.figures];
+    return newBoard;
+  }
+
+  isFieldUnderAttack(x: number, y: number, color: Colors): boolean {
+    const figures = this.getFiguresByColor(color).some((figure) =>
+      figure.canMove(this, { x: figure.x, y: figure.y }, { x, y })
+    );
+    return false;
   }
 
   private addFigure(figure: Figure, x: number, y: number): void {
@@ -100,36 +138,5 @@ export class Board {
     this.addFigure(new Rook(Colors.BLACK, 7, 0), 7, 0);
     this.addFigure(new Rook(Colors.WHITE, 0, 7), 0, 7);
     this.addFigure(new Rook(Colors.WHITE, 7, 7), 7, 7);
-  }
-
-  public getCellsWithFigure(color: Colors): Cell[] {
-    return this.cells.reduce((acc, row) => {
-      return acc.concat(
-        row.filter(
-          (cell) =>
-            cell.getFigure() !== null && cell.getFigure()?.color === color
-        )
-      );
-    }, []);
-  }
-
-  public getKing(color: Colors): King {
-    return this.figures.find(
-      (figure) => figure.color === color && figure instanceof King
-    ) as King;
-  }
-
-  public getCopy(): Board {
-    const newBoard = new Board();
-    newBoard.cells = this.cells.map((row) =>
-      row.map((cell) => {
-        const newCell = new Cell(cell.x, cell.y, cell.color);
-        newCell.setFigure(cell.getFigure());
-        return newCell;
-      })
-    );
-    newBoard.figures = [...this.figures];
-
-    return newBoard;
   }
 }

@@ -26,32 +26,22 @@ export class MoveSimulatorService {
         startCopy.getFigure()?.canMove(this.boardCopy, startCopy, endCopy)) ||
       gameService.isEnpassantPossible(startCopy, endCopy)
     ) {
-      const figure = startCopy.getFigure();
       const king = color && this.boardCopy.getKing(color);
+      const boardSnap = this.boardCopy.getCopy();
 
-      if (figure) {
-        const targetFigure = endCopy.getFigure();
+      const targetFigure = gameService.performMove(
+        this.boardCopy,
+        startCopy,
+        endCopy
+      );
 
-        if (targetFigure?.type !== FigureTypes.KING) {
-          const boardSnap = this.boardCopy.getCopy();
+      this.boardCopy.setFigures(
+        this.boardCopy.getFigures().filter((figure) => figure !== targetFigure)
+      );
 
-          endCopy.setFigure(figure);
-          startCopy.setFigure(null);
-
-          if (gameService.isEnpassantPossible(startCopy, endCopy)) {
-            const enPassantPawn = gameService.getEnpassantPawn()!;
-            this.boardCopy.setFigureInCell(
-              enPassantPawn!.x,
-              enPassantPawn!.y,
-              null
-            );
-          }
-
-          const isCheck = gameService.isKingInCheck(this.boardCopy, king);
-          this.setBoardCopy(boardSnap);
-          return !isCheck;
-        }
-      }
+      const isCheck = gameService.isKingInCheck(this.boardCopy, king);
+      this.setBoardCopy(boardSnap);
+      return !isCheck;
     }
     return false;
   }

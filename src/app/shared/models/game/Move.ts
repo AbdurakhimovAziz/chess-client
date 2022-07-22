@@ -27,4 +27,8 @@ export class Move {
   public getMoveedFigure(): Figure | null {
     return this.movedFigure;
   }
+
+  public getCapturedFigure(): Figure | null {
+    return this.capturedFigure;
+  }
 }

@@ -18,7 +18,7 @@ export abstract class Figure {
   }
 
   public canMove(board: Board, start: Point, end: Point): boolean {
-    const targetFigure = board.getFIgureByPosition(end.x, end.y);
+    const targetFigure = board.getFigureByPosition(end.x, end.y);
     if (targetFigure?.color === this.color) return false;
     return true;
   }
