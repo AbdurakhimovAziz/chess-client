@@ -17,10 +17,7 @@ export class GameViewService {
   private isDraggingSubject: BehaviorSubject<boolean>;
   public isDragging$!: Observable<boolean>;
 
-  constructor(
-    private moveSimulatorService: MoveSimulatorService,
-    private injector: Injector
-  ) {
+  constructor(private moveSimulatorService: MoveSimulatorService) {
     this.activeCellSubject = new BehaviorSubject<Cell | null>(null);
     this.activeCell$ = this.activeCellSubject
       .asObservable()
@@ -31,16 +28,13 @@ export class GameViewService {
   }
 
   public highlightCells(selectedCell: Cell | null): void {
-    const gameService = this.injector.get(GameService);
     const board = this.board;
     const cells = board.getCells();
 
     for (let row of cells) {
       for (let cell of row) {
         cell.setAvailable(
-          (!!selectedCell?.getFigure()?.canMove(board, selectedCell, cell) ||
-            gameService.isEnpassantPossible(selectedCell, cell)) &&
-            !this.moveSimulatorService.willCauseCheck(selectedCell, cell)
+          this.moveSimulatorService.isMoveLegal(selectedCell, cell)
         );
       }
     }

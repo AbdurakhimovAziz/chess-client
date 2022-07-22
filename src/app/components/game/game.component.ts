@@ -59,10 +59,10 @@ export class GameComponent implements OnInit, OnDestroy {
         this.moveSimulatorService.setBoardCopy(this.board);
 
         this.whiteKing?.setInCheck(
-          this.gameService.isKingUderCheck(this.board, this.whiteKing)
+          this.gameService.isKingInCheck(this.board, this.whiteKing)
         );
         this.blackKing?.setInCheck(
-          this.gameService.isKingUderCheck(this.board, this.blackKing)
+          this.gameService.isKingInCheck(this.board, this.blackKing)
         );
 
         this.gameService.checkEnpassant(move);

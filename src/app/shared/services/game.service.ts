@@ -102,7 +102,7 @@ export class GameService {
     return color === this.getCurrentPlayer().color;
   }
 
-  public isKingUderCheck(board: Board, king: Figure | undefined): boolean {
+  public isKingInCheck(board: Board, king: Figure | undefined): boolean {
     if (!king) return false;
 
     const color = king.color;
@@ -110,19 +110,14 @@ export class GameService {
     const enemyCells = board.getCellsWithFigure(enemyColor);
 
     for (const enemyCell of enemyCells) {
-      if (
-        enemyCell
-          .getFigure()
-          ?.canMove(
-            board,
-            { x: enemyCell.x, y: enemyCell.y },
-            { x: king.x, y: king.y }
-          )
-      ) {
-        return true;
-      }
+      return !!enemyCell
+        .getFigure()
+        ?.canMove(
+          board,
+          { x: enemyCell.x, y: enemyCell.y },
+          { x: king.x, y: king.y }
+        );
     }
-
     return false;
   }
 
@@ -141,6 +136,10 @@ export class GameService {
 
   public setEnpassantPawn(pawn: Pawn | null): void {
     this.enPassantPawn = pawn;
+  }
+
+  public getEnpassantPawn(): Pawn | null {
+    return this.enPassantPawn;
   }
 
   public isEnpassantPossible(start: Point | null, end: Point): boolean {

@@ -2,6 +2,7 @@ import { Injectable, Injector } from '@angular/core';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
 import { FigureTypes } from '../models/game/figures/Figure-types';
+import { Pawn } from '../models/game/figures/Pawn';
 import { GameService } from './game.service';
 
 @Injectable({
@@ -12,7 +13,7 @@ export class MoveSimulatorService {
 
   constructor(private injector: Injector) {}
 
-  public willCauseCheck(start: Cell | null, end: Cell): boolean {
+  public isMoveLegal(start: Cell | null, end: Cell): boolean {
     if (!start) return false;
     const startCopy = this.boardCopy.getCell(start.x, start.y);
     const endCopy = this.boardCopy.getCell(end.x, end.y);
@@ -36,9 +37,19 @@ export class MoveSimulatorService {
 
           endCopy.setFigure(figure);
           startCopy.setFigure(null);
-          const isCheck = gameService.isKingUderCheck(this.boardCopy, king);
+
+          if (gameService.isEnpassantPossible(startCopy, endCopy)) {
+            const enPassantPawn = gameService.getEnpassantPawn()!;
+            this.boardCopy.setFigureInCell(
+              enPassantPawn!.x,
+              enPassantPawn!.y,
+              null
+            );
+          }
+
+          const isCheck = gameService.isKingInCheck(this.boardCopy, king);
           this.setBoardCopy(boardSnap);
-          return isCheck;
+          return !isCheck;
         }
       }
     }
