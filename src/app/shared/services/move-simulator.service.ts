@@ -8,36 +8,36 @@ import { GameService } from './game.service';
   providedIn: 'root',
 })
 export class MoveSimulatorService {
-  private copyBoard!: Board;
+  private boardCopy!: Board;
 
   constructor(private injector: Injector) {}
 
   public willCauseCheck(start: Cell | null, end: Cell): boolean {
     if (!start) return false;
-    const startCopy = this.copyBoard.getCell(start.x, start.y);
-    const endCopy = this.copyBoard.getCell(end.x, end.y);
+    const startCopy = this.boardCopy.getCell(start.x, start.y);
+    const endCopy = this.boardCopy.getCell(end.x, end.y);
     const color = startCopy.getFigure()?.color;
     const gameService = this.injector.get(GameService);
 
     if (
       (startCopy &&
         startCopy !== endCopy &&
-        startCopy.getFigure()?.canMove(this.copyBoard, startCopy, endCopy)) ||
+        startCopy.getFigure()?.canMove(this.boardCopy, startCopy, endCopy)) ||
       gameService.isEnpassantPossible(startCopy, endCopy)
     ) {
       const figure = startCopy.getFigure();
-      const king = color && this.copyBoard.getKing(color);
+      const king = color && this.boardCopy.getKing(color);
 
       if (figure) {
         const targetFigure = endCopy.getFigure();
 
         if (targetFigure?.type !== FigureTypes.KING) {
-          const boardSnap = this.copyBoard.getCopy();
+          const boardSnap = this.boardCopy.getCopy();
 
           endCopy.setFigure(figure);
           startCopy.setFigure(null);
-          const isCheck = gameService.isKingUderCheck(this.copyBoard, king);
-          this.setCopyBoard(boardSnap);
+          const isCheck = gameService.isKingUderCheck(this.boardCopy, king);
+          this.setBoardCopy(boardSnap);
           return isCheck;
         }
       }
@@ -45,7 +45,7 @@ export class MoveSimulatorService {
     return false;
   }
 
-  public setCopyBoard(board: Board): void {
-    this.copyBoard = board.getCopy();
+  public setBoardCopy(board: Board): void {
+    this.boardCopy = board.getCopy();
   }
 }

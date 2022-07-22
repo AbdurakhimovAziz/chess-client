@@ -32,7 +32,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.board = this.gameService.getBoard();
-    this.moveSimulatorService.setCopyBoard(this.board);
+    this.moveSimulatorService.setBoardCopy(this.board);
     this.whiteKing = this.board.getKing(Colors.WHITE);
     this.blackKing = this.board.getKing(Colors.BLACK);
 
@@ -56,7 +56,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.addSubscription(
       this.moveService.lastMove$.subscribe((move: Move | null) => {
-        this.moveSimulatorService.setCopyBoard(this.board);
+        this.moveSimulatorService.setBoardCopy(this.board);
 
         this.whiteKing?.setInCheck(
           this.gameService.isKingUderCheck(this.board, this.whiteKing)
