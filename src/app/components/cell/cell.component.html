@@ -1,0 +1,3 @@
+<img *ngIf="cell.getFigure() as figure" [src]="figure.imgSrc" [alt]="figure.type" cdkDrag (cdkDragStarted)="dragStarted.emit()"
+  (cdkDragEnded)="dragEnded.emit($event)">
+<div *ngIf=" cell.isEmpty() && cell.isAvailable()" class="hint"></div>

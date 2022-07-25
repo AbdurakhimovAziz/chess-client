@@ -1,0 +1,9 @@
+<ng-container *ngFor="let row of board.getCells()">
+  <app-cell *ngFor="let cell of row" class="cell" [class]="cell.color" [ngClass]="{
+    'selected' : cell.x === this.getActiveCell()?.x && cell.y === this.getActiveCell()?.y,
+    'under-attack' : !cell.isEmpty() && cell.isAvailable(),
+    'check': isKingInCheck(cell),
+    'hinted' : cell.isEmpty() && cell.isAvailable()}" [cell]="cell" (click)="handleMove(cell)" (dragStarted)="dragStarted(cell)"
+    (dragEnded)="dragEnded($event)">
+  </app-cell>
+</ng-container>
