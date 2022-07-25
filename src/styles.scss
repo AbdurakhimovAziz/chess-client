@@ -1,8 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
+@use "./app/shared/scss/mixins" as *;
+@use "./app/shared/scss/variables" as *;
 
 html,
 body {
   height: 100%;
+  user-select: none;
 }
 body {
   margin: 0;
@@ -10,4 +12,51 @@ body {
 }
 .full-width {
   width: 100%;
+}
+
+.board {
+  width: calc(64px * 8);
+  height: calc(64px * 8);
+  display: flex;
+  flex-wrap: wrap;
+  transition: all 0.5s ease-in-out;
+}
+
+.cell {
+  width: 64px;
+  height: 64px;
+  @include flex-center;
+  &.selected {
+    background-color: $cell-active;
+  }
+  &.under-attack {
+    background-color: $cell-attack;
+  }
+  &.check {
+    background-color: $check;
+  }
+  &.hinted {
+    cursor: pointer;
+  }
+  img {
+    width: 80%;
+    height: 80%;
+    cursor: grab;
+  }
+}
+
+.hint {
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  opacity: 0.5;
+  background-color: $primary;
+}
+
+.black {
+  background-color: $board-black;
+}
+
+.white {
+  background-color: $board-white;
 }

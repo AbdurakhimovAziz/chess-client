@@ -7,9 +7,19 @@ import { MainComponent } from './main/main.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from '../app-routing.module';
+import { BoardComponent } from './board/board.component';
+import { CellComponent } from './cell/cell.component';
+import { GameComponent } from './game/game.component';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, MainComponent],
+  declarations: [
+    LoginComponent,
+    RegisterComponent,
+    MainComponent,
+    BoardComponent,
+    CellComponent,
+    GameComponent,
+  ],
   imports: [
     CommonModule,
     AppMaterialModule,
