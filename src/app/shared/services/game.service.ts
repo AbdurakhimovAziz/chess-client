@@ -238,24 +238,4 @@ export class GameService {
     }
     return true;
   }
-
-  // public isCheckMate(board: Board): boolean {
-  //   const king = board.getKing(this.getCurrentPlayer().color);
-  //   if (this.isKingUderCheck(board, king)) {
-  //     const moves = this.moveSimulatorService.getAllMoves(board);
-  //     for (const move of moves) {
-  //       if (
-  //         move.getMoveedFigure()?.color === this.getCurrentPlayer().color &&
-  //         !this.isKingUderCheck(
-  //           this.moveSimulatorService.simulateMove(board, move),
-  //           king
-  //         )
-  //       ) {
-  //         return false;
-  //       }
-  //     }
-  //     return true;
-  //   }
-  //   return false;
-  // }
 }
