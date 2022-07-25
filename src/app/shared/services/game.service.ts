@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { CastlingDirection } from '../constants';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
 import { Colors } from '../models/game/Colors';
@@ -64,14 +65,24 @@ export class GameService {
 
   public handleMove(start: Cell | null, end: Cell): void {
     if (start && start !== end && end.isAvailable()) {
-      this.moveFigure(start, end);
+      this.processMove(start, end);
       this.gameViewService.setActiveCell(null);
     } else if (!end.isEmpty() && this.isRightTurn(end.getFigure()?.color!))
       this.gameViewService.setActiveCell(end);
   }
 
-  public moveFigure(start: Cell, end: Cell): void {
+  public processMove(start: Cell, end: Cell): void {
     const move = new Move(this.getCurrentPlayer(), start, end);
+
+    if (this.isCastlingPossible(start, end)) {
+      this.performCastling(
+        this.board,
+        start.getFigure() as King,
+        end.x < start.x ? CastlingDirection.LEFT : CastlingDirection.RIGHT
+      );
+      move.setCastlingMove(true);
+    }
+
     const targetFigure = this.performMove(this.board, start, end);
     targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
     move.setCapturedFigure(targetFigure);
@@ -93,6 +104,24 @@ export class GameService {
     end.setFigure(figure);
     start.setFigure(null);
     return targetFigure;
+  }
+
+  public performCastling(
+    board: Board,
+    figure: Figure,
+    castlingDirection: CastlingDirection
+  ): void {
+    let rook;
+    const row = figure.y;
+    if (castlingDirection === CastlingDirection.LEFT) {
+      rook = board.getFigureByPosition(0, row);
+      board.setFigureInCell(0, row, null);
+      board.setFigureInCell(3, row, rook);
+    } else {
+      rook = board.getFigureByPosition(7, row);
+      board.setFigureInCell(7, row, null);
+      board.setFigureInCell(5, row, rook);
+    }
   }
 
   public isRightTurn(color: Colors): boolean {
@@ -149,6 +178,65 @@ export class GameService {
     }
 
     return false;
+  }
+
+  public isCastlingPossible(start: Point, end: Point): boolean {
+    let castlingPossible = true;
+    const figure = this.board.getFigureByPosition(start.x, start.y);
+    if (
+      !(figure instanceof King) ||
+      figure.isMoved() ||
+      figure.y !== end.y ||
+      figure.isInCheck()
+    )
+      return false;
+
+    const dx = Math.abs(start.x - end.x);
+    const castlingDirection =
+      end.x < start.x ? CastlingDirection.LEFT : CastlingDirection.RIGHT;
+    const rook = this.board.getFigureByPosition(
+      castlingDirection === CastlingDirection.LEFT ? 0 : 7,
+      figure.y
+    );
+
+    if (dx !== 2 || !(rook instanceof Rook) || rook.isMoved()) return false;
+
+    castlingPossible =
+      castlingDirection === CastlingDirection.LEFT
+        ? this.isLongCastlingPossible(figure)
+        : this.isShortCastlingPossible(figure);
+
+    return castlingPossible;
+  }
+
+  public isLongCastlingPossible(figure: King): boolean {
+    for (let i = figure.x - 1; i > 0; --i) {
+      if (
+        !this.board.isCellEmpty(i, figure.y) ||
+        this.board.isCellUnderAttack(
+          { x: i, y: figure.y },
+          figure.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE
+        )
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public isShortCastlingPossible(figure: King): boolean {
+    for (let i = figure.x + 1; i < 7; ++i) {
+      if (
+        !this.board.isCellEmpty(i, figure.y) ||
+        this.board.isCellUnderAttack(
+          { x: i, y: figure.y },
+          figure.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE
+        )
+      ) {
+        return false;
+      }
+    }
+    return true;
   }
 
   // public isCheckMate(board: Board): boolean {

@@ -1,7 +1,5 @@
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
-import { Colors } from '../models/game/Colors';
-import { Figure } from '../models/game/figures/Figure';
 import { Point } from '../models/game/Point';
 
 export abstract class CellChecker {

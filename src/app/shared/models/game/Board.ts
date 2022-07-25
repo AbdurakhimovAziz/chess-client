@@ -7,6 +7,7 @@ import { Knight } from './figures/Knight';
 import { Pawn } from './figures/Pawn';
 import { Queen } from './figures/Queen';
 import { Rook } from './figures/Rook';
+import { Point } from './Point';
 
 export class Board {
   private cells: Cell[][] = [];
@@ -90,11 +91,10 @@ export class Board {
     return newBoard;
   }
 
-  isFieldUnderAttack(x: number, y: number, color: Colors): boolean {
-    const figures = this.getFiguresByColor(color).some((figure) =>
-      figure.canMove(this, { x: figure.x, y: figure.y }, { x, y })
+  public isCellUnderAttack(point: Point, color: Colors): boolean {
+    return this.getFiguresByColor(color).some((figure) =>
+      figure.canMove(this, { x: figure.x, y: figure.y }, point)
     );
-    return false;
   }
 
   private addFigure(figure: Figure, x: number, y: number): void {

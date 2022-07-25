@@ -56,13 +56,13 @@ export class BoardComponent {
     }
   }
 
-  public isKingUnderCheck(cell: Cell | null): boolean {
+  public isKingInCheck(cell: Cell | null): boolean {
     if (!cell) return false;
 
     const figure = cell.getFigure();
     if (!figure || !(figure instanceof King)) return false;
 
-    return cell.x === figure.x && cell.y === figure.y && figure.isInCheck();
+    return figure.isInCheck();
   }
 
   public getActiveCell(): Cell | null {

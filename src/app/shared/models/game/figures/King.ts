@@ -41,28 +41,4 @@ export class King extends Figure {
   public setMoved(moved: boolean): void {
     this.moved = moved;
   }
-
-  public isCastlingPossible(board: Board, start: Point, end: Point): boolean {
-    let castlingPossible = false;
-    if (!this.moved) {
-      for (let i = this.x - 1; i > 0; --i) {
-        if (
-          !board.isCellEmpty(this.y, i) ||
-          board.isFieldUnderAttack(
-            this.y,
-            i,
-            this.color === Colors.WHITE ? Colors.BLACK : Colors.WHITE
-          )
-        ) {
-          castlingPossible = false;
-          break;
-        }
-        const leftRook = board.getFigureByPosition(0, this.y);
-        const rightRook = board.getFigureByPosition(7, this.y);
-        console.log('rook', leftRook);
-        console.log('rook', rightRook);
-      }
-    }
-    return castlingPossible;
-  }
 }

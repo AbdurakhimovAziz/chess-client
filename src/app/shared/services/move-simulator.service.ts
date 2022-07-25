@@ -24,7 +24,8 @@ export class MoveSimulatorService {
       (startCopy &&
         startCopy !== endCopy &&
         startCopy.getFigure()?.canMove(this.boardCopy, startCopy, endCopy)) ||
-      gameService.isEnpassantPossible(startCopy, endCopy)
+      gameService.isEnpassantPossible(startCopy, endCopy) ||
+      gameService.isCastlingPossible(startCopy, endCopy)
     ) {
       const king = color && this.boardCopy.getKing(color);
       const boardSnap = this.boardCopy.getCopy();
