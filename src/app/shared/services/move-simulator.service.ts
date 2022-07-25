@@ -1,8 +1,10 @@
 import { Injectable, Injector } from '@angular/core';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
+import { Colors } from '../models/game/Colors';
 import { FigureTypes } from '../models/game/figures/Figure-types';
 import { Pawn } from '../models/game/figures/Pawn';
+import { Point } from '../models/game/Point';
 import { GameService } from './game.service';
 
 @Injectable({
@@ -45,6 +47,26 @@ export class MoveSimulatorService {
       return !isCheck;
     }
     return false;
+  }
+
+  public getAllPossibleMoves(color: Colors): Point[] {
+    const board = this.boardCopy;
+    const figures = board.getFiguresByColor(color);
+    const cells = board.getCells();
+    const possibleMoves: Point[] = [];
+
+    for (let figure of figures) {
+      for (let row of cells) {
+        for (let cell of row) {
+          const start = board.getCell(figure.x, figure.y);
+          if (this.isMoveLegal(start, cell)) {
+            possibleMoves.push(new Point(cell.x, cell.y));
+          }
+        }
+      }
+    }
+    console.log('possible moves', possibleMoves);
+    return possibleMoves;
   }
 
   public setBoardCopy(board: Board): void {

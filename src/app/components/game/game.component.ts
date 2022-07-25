@@ -35,6 +35,7 @@ export class GameComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.board = this.gameService.getBoard();
     this.moveSimulatorService.setBoardCopy(this.board);
+
     this.whiteKing = this.board.getKing(Colors.WHITE);
     this.blackKing = this.board.getKing(Colors.BLACK);
 
@@ -48,12 +49,6 @@ export class GameComponent implements OnInit, OnDestroy {
       this.gameService.currentPlayer$.subscribe(
         (player) => (this.currentPlayer = player)
       )
-    );
-
-    this.addSubscription(
-      this.moveService.lastMove$.subscribe((move) => {
-        this.gameService.swapCurrentPlayer();
-      })
     );
 
     this.addSubscription(
@@ -82,6 +77,13 @@ export class GameComponent implements OnInit, OnDestroy {
         );
 
         this.gameService.checkEnpassant(move);
+        this.gameService.swapCurrentPlayer();
+
+        const possibleMoves = this.moveSimulatorService.getAllPossibleMoves(
+          this.currentPlayer.color
+        );
+        if (possibleMoves.length === 0)
+          console.log('checkmate', this.currentPlayer);
       })
     );
   }

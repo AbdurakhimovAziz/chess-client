@@ -27,14 +27,14 @@ export class BoardComponent {
     this.gameService.handleMove(activeCell, cell);
   }
 
-  public dragStarted(cell: Cell) {
+  public dragStarted(cell: Cell): void {
     if (this.gameService.isRightTurn(cell.getFigure()?.color!)) {
       this.gameViewService.setIsDragging(true);
       this.gameViewService.setActiveCell(cell);
     }
   }
 
-  public dragEnded(event: CdkDragEnd) {
+  public dragEnded(event: CdkDragEnd): void {
     const activeCell = this.getActiveCell();
 
     if (activeCell) {
