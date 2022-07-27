@@ -1,6 +1,5 @@
 import { Colors } from './Colors';
 import { Figure } from './figures/Figure';
-import { King } from './figures/King';
 
 export class Cell {
   public readonly x: number;

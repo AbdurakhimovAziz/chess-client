@@ -13,6 +13,7 @@ import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
 import { Point } from '../models/game/Point';
 import { GameViewService } from './game-view.service';
+import { MoveSimulatorService } from './move-simulator.service';
 import { MoveService } from './move.service';
 
 @Injectable({
@@ -29,7 +30,8 @@ export class GameService {
 
   constructor(
     private moveService: MoveService,
-    private gameViewService: GameViewService
+    private gameViewService: GameViewService,
+    private moveSimulatorService: MoveSimulatorService
   ) {
     this.restart();
     this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
@@ -237,5 +239,21 @@ export class GameService {
       }
     }
     return true;
+  }
+
+  public isStalemate(color: Colors): boolean {
+    const figures = this.board.getFiguresByColor(color);
+    const cells = this.board.getCells();
+
+    return !figures.some((figure) => {
+      return cells.some((row) =>
+        row.some((cell) =>
+          this.moveSimulatorService.isMoveLegal(
+            this.board.getCell(figure.x, figure.y),
+            cell
+          )
+        )
+      );
+    });
   }
 }

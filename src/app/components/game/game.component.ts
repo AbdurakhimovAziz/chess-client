@@ -53,6 +53,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.addSubscription(
       this.moveService.lastMove$.subscribe((move: Move) => {
+        this.gameService.swapCurrentPlayer();
+
         const figure = move.getMoveedFigure();
         if (
           figure instanceof Pawn ||
@@ -77,15 +79,22 @@ export class GameComponent implements OnInit, OnDestroy {
         );
 
         this.gameService.checkEnpassant(move);
-        this.gameService.swapCurrentPlayer();
-
-        const possibleMoves = this.moveSimulatorService.getAllPossibleMoves(
-          this.currentPlayer.color
-        );
-        if (possibleMoves.length === 0)
-          console.log('checkmate', this.currentPlayer);
+        this.checkGameOver();
       })
     );
+  }
+
+  private checkGameOver(): void {
+    const stalemate = this.gameService.isStalemate(this.currentPlayer.color);
+
+    if (stalemate) {
+      const king =
+        this.currentPlayer.color === Colors.WHITE
+          ? this.whiteKing
+          : this.blackKing;
+      if (king?.isInCheck) console.log('checkmate');
+      else console.log('stalemate. DRAW!');
+    }
   }
 
   private addSubscription(subscription: Subscription): void {
