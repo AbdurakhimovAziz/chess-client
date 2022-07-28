@@ -103,11 +103,8 @@ export class GameService {
       );
     }
 
-    board.setFigureInCell(end.x, end.y, figure);
-    board.setFigureInCell(start.x, start.y, null);
-
-    // end.setFigure(figure);
-    // start.setFigure(null);
+    end.setFigure(figure);
+    start.setFigure(null);
     return targetFigure;
   }
 

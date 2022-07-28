@@ -33,14 +33,9 @@ export class GameViewService {
 
     for (let row of cells) {
       for (let cell of row) {
-        const isLegal = this.moveSimulatorService.isMoveLegal(
-          selectedCell,
-          cell
+        cell.setAvailable(
+          this.moveSimulatorService.isMoveLegal(selectedCell, cell)
         );
-        board.setCell(cell.x, cell.y, cell.setAvailable(isLegal));
-        // cell.setAvailable(
-        //   this.moveSimulatorService.isMoveLegal(selectedCell, cell)
-        // );
       }
     }
   }
@@ -50,7 +45,7 @@ export class GameViewService {
   }
 
   public setActiveCell(cell: Cell | null): void {
-    if (cell?.isEqual(this.getActiveCell()) && !this.getIsDragging())
+    if (cell === this.getActiveCell() && !this.getIsDragging())
       this.activeCellSubject.next(null);
     else this.activeCellSubject.next(cell);
   }

@@ -23,19 +23,9 @@ export class Board {
       this.cells[i] = [];
       for (let j = 0; j < 8; j++) {
         if ((i + j) % 2 === 0) {
-          this.cells[i][j] = new Cell({
-            x: j,
-            y: i,
-            color: Colors.WHITE,
-            figure: null,
-          });
+          this.cells[i][j] = new Cell(j, i, Colors.WHITE);
         } else {
-          this.cells[i][j] = new Cell({
-            x: j,
-            y: i,
-            color: Colors.BLACK,
-            figure: null,
-          });
+          this.cells[i][j] = new Cell(j, i, Colors.BLACK);
         }
       }
     }
@@ -43,10 +33,6 @@ export class Board {
 
   public getCell(x: number, y: number): Cell {
     return this.cells[y][x];
-  }
-
-  public setCell(x: number, y: number, cell: Cell): void {
-    this.cells[y][x] = cell;
   }
 
   public getCells(): Cell[][] {
@@ -58,8 +44,7 @@ export class Board {
   }
 
   public setFigureInCell(x: number, y: number, figure: Figure | null): void {
-    this.setCell(x, y, this.getCell(x, y).setFigure(figure));
-    // this.getCell(x, y).setFigure(figure);
+    this.getCell(x, y).setFigure(figure);
   }
 
   public isCellEmpty(x: number, y: number): boolean {
@@ -97,13 +82,7 @@ export class Board {
     const newBoard = new Board();
     newBoard.cells = this.cells.map((row) =>
       row.map((cell) => {
-        const newCell = new Cell({
-          x: cell.x,
-          y: cell.y,
-          color: cell.color,
-          figure: cell.getFigure(),
-          available: cell.isAvailable(),
-        });
+        const newCell = new Cell(cell.x, cell.y, cell.color);
         newCell.setFigure(cell.getFigure());
         return newCell;
       })
@@ -119,8 +98,7 @@ export class Board {
   }
 
   private addFigure(figure: Figure, x: number, y: number): void {
-    this.setCell(x, y, this.getCell(x, y).setFigure(figure));
-    // this.getCell(x, y).setFigure(figure);
+    this.getCell(x, y).setFigure(figure);
     this.figures.push(figure);
   }
 

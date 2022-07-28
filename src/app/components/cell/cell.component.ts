@@ -1,18 +1,11 @@
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
-import { Cell } from '../../shared/models/game/Cell';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Cell } from 'src/app/shared/models/game/Cell';
 
 @Component({
   selector: 'app-cell',
   templateUrl: './cell.component.html',
   styleUrls: ['./cell.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CellComponent {
   @Input() cell!: Cell;
