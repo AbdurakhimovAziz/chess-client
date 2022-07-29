@@ -15,6 +15,7 @@ import { Point } from '../models/game/Point';
 import { GameViewService } from './game-view.service';
 import { MoveSimulatorService } from './move-simulator.service';
 import { MoveService } from './move.service';
+import { WebsocketService } from './websocket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,8 @@ export class GameService {
   constructor(
     private moveService: MoveService,
     private gameViewService: GameViewService,
-    private moveSimulatorService: MoveSimulatorService
+    private moveSimulatorService: MoveSimulatorService,
+    private wsService: WebsocketService
   ) {
     this.restart();
     this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
@@ -67,14 +69,23 @@ export class GameService {
 
   public handleMove(start: Cell | null, end: Cell): void {
     if (start && start !== end && end.isAvailable()) {
-      this.processMove(start, end);
+      const move = new Move(
+        this.getCurrentPlayer(),
+        this.board,
+        new Point(start.x, start.y),
+        new Point(end.x, end.y)
+      );
+
+      this.processMove(move);
+      this.wsService.send('move', move);
       this.gameViewService.setActiveCell(null);
     } else if (!end.isEmpty() && this.isRightTurn(end.getFigure()?.color!))
       this.gameViewService.setActiveCell(end);
   }
 
-  public processMove(start: Cell, end: Cell): void {
-    const move = new Move(this.getCurrentPlayer(), start, end);
+  public processMove(move: Move): void {
+    const start = this.board.getCell(move.start.x, move.start.y);
+    const end = this.board.getCell(move.end.x, move.end.y);
 
     if (this.isCastlingPossible(start, end)) {
       this.performCastling(

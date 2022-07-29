@@ -11,6 +11,7 @@ import { GameViewService } from 'src/app/shared/services/game-view.service';
 import { GameService } from 'src/app/shared/services/game.service';
 import { MoveSimulatorService } from 'src/app/shared/services/move-simulator.service';
 import { MoveService } from 'src/app/shared/services/move.service';
+import { WebsocketService } from 'src/app/shared/services/websocket.service';
 
 @Component({
   selector: 'app-game',
@@ -29,7 +30,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private gameService: GameService,
     private gameViewService: GameViewService,
     private moveService: MoveService,
-    private moveSimulatorService: MoveSimulatorService
+    private moveSimulatorService: MoveSimulatorService,
+    private wsService: WebsocketService
   ) {}
 
   ngOnInit(): void {
@@ -38,6 +40,18 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.whiteKing = this.board.getKing(Colors.WHITE);
     this.blackKing = this.board.getKing(Colors.BLACK);
+
+    this.wsService.connect();
+    this.wsService.on<Move>('move').subscribe((data: Move) => {
+      this.gameViewService.setActiveCell(null);
+      const move = new Move(
+        this.currentPlayer,
+        this.board,
+        data.start,
+        data.end
+      );
+      this.gameService.processMove(move);
+    });
 
     this.addSubscription(
       this.gameViewService.activeCell$.subscribe((cell) =>
