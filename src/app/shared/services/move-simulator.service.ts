@@ -1,8 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
-import { FigureTypes } from '../models/game/figures/Figure-types';
-import { Pawn } from '../models/game/figures/Pawn';
 import { GameService } from './game.service';
 
 @Injectable({
