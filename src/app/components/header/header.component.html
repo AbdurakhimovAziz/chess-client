@@ -7,11 +7,13 @@
   <div class="header__user">
     <button mat-flat-button color="accent" [matMenuTriggerFor]="profile">
       <ng-container *ngIf="(user$ | async) as u">
+        <mat-icon>person</mat-icon>
         {{ u.firstName + ' ' + u.lastName }}
       </ng-container>
     </button>
     <mat-menu #profile="matMenu">
       <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
         <span>Logout</span>
       </button>
     </mat-menu>

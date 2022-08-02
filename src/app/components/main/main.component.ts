@@ -6,10 +6,4 @@ import { WebsocketService } from 'src/app/shared/services/websocket.service';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
 })
-export class MainComponent {
-  constructor(private wsService: WebsocketService) {}
-
-  disconnect() {
-    this.wsService.disconnect();
-  }
-}
+export class MainComponent {}

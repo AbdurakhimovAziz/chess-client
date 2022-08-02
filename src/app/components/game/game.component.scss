@@ -2,7 +2,6 @@
 
 :host {
   display: block;
-  width: 100vw;
-  height: 100vh;
+  margin: auto;
   @include flex-center;
 }

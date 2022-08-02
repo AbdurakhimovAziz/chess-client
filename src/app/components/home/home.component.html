@@ -1,1 +1,9 @@
-<app-header></app-header>
+<main class="main">
+  <button mat-raised-button color="warn" (click)="createLobby()">Create Lobby</button>
+  <button mat-button (click)="getAllLobbies()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+  <ul>
+    <li *ngFor="let lobby of lobbies"> {{ lobby.id }} </li>
+  </ul>
+</main>

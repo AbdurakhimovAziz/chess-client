@@ -41,11 +41,6 @@ export class GameComponent implements OnInit, OnDestroy {
     this.whiteKing = this.board.getKing(Colors.WHITE);
     this.blackKing = this.board.getKing(Colors.BLACK);
 
-    this.wsService.connect();
-    this.wsService
-      .on<any>('message')
-      .subscribe((data: any) => console.log('message', new Map(data)));
-
     this.wsService.on<Move>('move').subscribe((data: Move) => {
       this.gameViewService.setActiveCell(null);
       const move = new Move(
