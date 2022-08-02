@@ -10,6 +10,8 @@ import { AppRoutingModule } from '../app-routing.module';
 import { BoardComponent } from './board/board.component';
 import { CellComponent } from './cell/cell.component';
 import { GameComponent } from './game/game.component';
+import { HomeComponent } from './home/home.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,8 @@ import { GameComponent } from './game/game.component';
     BoardComponent,
     CellComponent,
     GameComponent,
+    HomeComponent,
+    HeaderComponent,
   ],
   imports: [
     CommonModule,

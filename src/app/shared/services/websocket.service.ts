@@ -95,6 +95,9 @@ export class WebsocketService implements OnDestroy {
           this.reconnect();
         }
       },
+      complete: () => {
+        console.log('WebSocket disconnected!');
+      },
     });
   }
 
@@ -136,6 +139,10 @@ export class WebsocketService implements OnDestroy {
   }
 
   public disconnect(): void {
+    this.websocket$?.complete();
+  }
+
+  public disconnection(): void {
     this.websocket$?.complete();
   }
 
