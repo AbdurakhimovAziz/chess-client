@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Events } from 'src/app/shared/models/events';
-import { Lobby } from 'src/app/shared/models/game/lobby';
-import { LobbyCreateResponse } from 'src/app/shared/models/ws-responses';
-import { UsersService } from 'src/app/shared/services/user.service';
-import { WebsocketService } from 'src/app/shared/services/websocket.service';
+import { AuthService } from 'src/app/auth/auth.service';
+import { LobbyCreateDTO } from 'src/app/shared/models/ws-requests';
+import { Events } from '../../shared/models/events';
+import { Lobby } from '../../shared/models/game/Lobby';
+import {
+  LobbyCreateResponse,
+  LobbyJoinResponse,
+} from '../../shared/models/ws-responses';
+import { UsersService } from '../../shared/services/user.service';
+import { WebsocketService } from '../../shared/services/websocket.service';
 
 @Component({
   selector: 'app-home',
@@ -12,10 +17,12 @@ import { WebsocketService } from 'src/app/shared/services/websocket.service';
 })
 export class HomeComponent implements OnInit {
   public lobbies: Lobby[] = [];
+  public user$ = this.userService.user$;
 
   constructor(
     private wsService: WebsocketService,
-    private userService: UsersService
+    private userService: UsersService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -38,17 +45,33 @@ export class HomeComponent implements OnInit {
         this.lobbies.push(data.lobby);
         console.log(this.lobbies);
       });
+
+    this.wsService
+      .on<LobbyJoinResponse>(Events.LOBBY_JOIN)
+      .subscribe((data: LobbyJoinResponse) => {
+        console.log(data);
+      });
   }
 
   public createLobby(): void {
-    const userId = this.userService.getId();
-    this.wsService.send(Events.LOBBY_CREATE, {
+    const user = this.userService.getUser();
+    if (!user) return;
+    this.wsService.send<LobbyCreateDTO>(Events.LOBBY_CREATE, {
       maxClients: 2,
-      userId,
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
     });
   }
 
   public getAllLobbies(): void {
     this.wsService.send(Events.LOBBY_LIST);
+  }
+
+  public logout(): void {
+    this.authService.logout();
   }
 }

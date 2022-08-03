@@ -12,6 +12,7 @@ import { CellComponent } from './cell/cell.component';
 import { GameComponent } from './game/game.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
+import { LobbyItemComponent } from './lobby-item/lobby-item.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { HeaderComponent } from './header/header.component';
     GameComponent,
     HomeComponent,
     HeaderComponent,
+    LobbyItemComponent,
   ],
   imports: [
     CommonModule,

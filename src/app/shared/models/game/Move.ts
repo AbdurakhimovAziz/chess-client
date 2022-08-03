@@ -1,5 +1,4 @@
 import { Board } from './Board';
-import { Cell } from './Cell';
 import { Figure } from './figures/Figure';
 import { Player } from './Player';
 import { Point } from './Point';

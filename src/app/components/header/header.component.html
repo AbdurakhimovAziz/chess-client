@@ -5,7 +5,7 @@
   </a>
 
   <div class="header__user">
-    <button mat-flat-button color="accent" [matMenuTriggerFor]="profile">
+    <button mat-flat-button [matMenuTriggerFor]="profile">
       <ng-container *ngIf="(user$ | async) as u">
         <mat-icon>person</mat-icon>
         {{ u.firstName + ' ' + u.lastName }}

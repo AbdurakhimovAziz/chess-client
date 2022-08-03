@@ -18,7 +18,7 @@ import {
   takeWhile,
 } from 'rxjs';
 import { WS_ENDPOINT } from '../constants';
-import { WsMessage } from '../models/ws-message';
+import { WsMessage } from '../models/ws-requests';
 
 @Injectable({
   providedIn: 'root',
@@ -130,7 +130,7 @@ export class WebsocketService implements OnDestroy {
       : EMPTY;
   }
 
-  public send(event: string, data: any = {}): void {
+  public send<T>(event: string, data?: T): void {
     if (event && this.isConnected && this.websocket$) {
       this.websocket$.next({ event, data });
     } else {

@@ -1,9 +1,30 @@
 <main class="main">
-  <button mat-raised-button color="warn" (click)="createLobby()">Create Lobby</button>
-  <button mat-button (click)="getAllLobbies()">
-    <mat-icon>refresh</mat-icon>
-  </button>
-  <ul>
-    <li *ngFor="let lobby of lobbies"> {{ lobby.id }} </li>
-  </ul>
+  <div class="profile card" *ngIf="user$ | async as user">
+    <div class="profile__avatar">
+      <img src="../../../assets/images/avatar.png" alt="avatar" class="profile__avatar-img">
+    </div>
+    <div class="profile__info">
+      <h1 class="profile__name">{{user.firstName}} {{user.lastName}}</h1>
+      <p class="profile__details">some settings</p>
+      <button class="profile__button" mat-raised-button color="accent" (click)="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="main__buttons">
+    <button mat-raised-button color="warn" (click)="createLobby()">Create Lobby</button>
+  </div>
+
+  <div class="main__lobbies lobbies card">
+    <header class="lobbies__header">
+      <h3 class="lobbies__title">Available games</h3>
+      <button class="lobbies__btn" mat-icon-button (click)="getAllLobbies()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </header>
+    <ul class="lobbies__list">
+      <li *ngFor="let lobby of lobbies">
+        <app-lobby-item [lobby]="lobby"></app-lobby-item>
+      </li>
+    </ul>
+    <p *ngIf="lobbies.length === 0" class="lobbies__text">No games available. Create one!</p>
+  </div>
 </main>

@@ -1,5 +1,5 @@
 import { Colors } from './game/Colors';
-import { Lobby } from './game/lobby';
+import { Lobby } from './game/Lobby';
 
 export interface LobbyCreateResponse {
   hostColor: Colors;

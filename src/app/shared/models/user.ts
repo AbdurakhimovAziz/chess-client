@@ -5,3 +5,9 @@ export interface User {
   firstName: string;
   lastName: string;
 }
+
+export type UserDetails = Pick<
+  User,
+  '_id' | 'firstName' | 'lastName' | 'email'
+>;
+

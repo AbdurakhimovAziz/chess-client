@@ -3,6 +3,7 @@ import { Figure } from './figures/Figure';
 
 export class Player {
   public readonly color: Colors;
+  public readonly lobbyId!: string;
   private capturedFigures: Figure[] = [];
 
   constructor(color: Colors) {

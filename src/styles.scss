@@ -5,11 +5,15 @@ html,
 body {
   height: 100%;
   user-select: none;
+  background-image: url("./assets/images/main-bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
 .full-width {
   width: 100%;
 }
