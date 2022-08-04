@@ -4,4 +4,5 @@ export const enum Events {
   LOBBY_LEAVE = 'lobby-leave',
   LOBBY_LIST = 'lobby-list',
   ERROR = 'error',
+  MOVE = 'move',
 }

@@ -21,7 +21,12 @@ import { WebsocketService } from './websocket.service';
   providedIn: 'root',
 })
 export class GameService {
+  //TODO: add game status
+  //TODO: set players to null, instantiate only after joining the lobby
+  //TODO: add game mode. If it's online then set only one player
   private board!: Board;
+  private gameMode: 'online' | 'local' = 'local';
+  private onlinePlayerColor: Colors | null = null;
 
   private currentPlayerSubject: BehaviorSubject<Player>;
   public currentPlayer$: Observable<Player>;
@@ -65,6 +70,14 @@ export class GameService {
 
   public getBoard(): Board {
     return this.board;
+  }
+
+  public setPlayer(player: Player): void {
+    if (player.color === Colors.WHITE) {
+      this.whitePlayer = player;
+    } else {
+      this.blackPlayer = player;
+    }
   }
 
   public handleMove(start: Cell | null, end: Cell): void {
@@ -137,8 +150,21 @@ export class GameService {
     }
   }
 
+  public changeGameMode(
+    mode: 'online' | 'local',
+    onlinePlayerColor?: Colors
+  ): void {
+    this.gameMode = mode;
+    if (mode === 'online') {
+      this.onlinePlayerColor = onlinePlayerColor || null;
+    }
+  }
+
   public isRightTurn(color: Colors): boolean {
-    return color === this.getCurrentPlayer().color;
+    return this.gameMode === 'local'
+      ? color === this.getCurrentPlayer().color
+      : color === this.onlinePlayerColor &&
+          color === this.getCurrentPlayer().color;
   }
 
   public isKingInCheck(board: Board, king: Figure | undefined): boolean {

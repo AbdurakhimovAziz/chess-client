@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription, switchMap } from 'rxjs';
+import { Events } from 'src/app/shared/models/events';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Colors } from 'src/app/shared/models/game/Colors';
 import { King } from 'src/app/shared/models/game/figures/King';
@@ -11,6 +13,7 @@ import { GameViewService } from 'src/app/shared/services/game-view.service';
 import { GameService } from 'src/app/shared/services/game.service';
 import { MoveSimulatorService } from 'src/app/shared/services/move-simulator.service';
 import { MoveService } from 'src/app/shared/services/move.service';
+import { UsersService } from 'src/app/shared/services/user.service';
 import { WebsocketService } from 'src/app/shared/services/websocket.service';
 
 @Component({
@@ -25,23 +28,28 @@ export class GameComponent implements OnInit, OnDestroy {
   private blackKing: King | null = null;
 
   private subsriptions: Subscription[] = [];
+  private lobbyId: string | null = null;
 
   constructor(
     private gameService: GameService,
     private gameViewService: GameViewService,
     private moveService: MoveService,
     private moveSimulatorService: MoveSimulatorService,
-    private wsService: WebsocketService
+    private userService: UsersService,
+    private wsService: WebsocketService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.lobbyId = this.route.snapshot.queryParamMap.get('lobbyId');
+
     this.board = this.gameService.getBoard();
     this.moveSimulatorService.setBoardCopy(this.board);
 
     this.whiteKing = this.board.getKing(Colors.WHITE);
     this.blackKing = this.board.getKing(Colors.BLACK);
 
-    this.wsService.on<Move>('move').subscribe((data: Move) => {
+    this.wsService.on<Move>(Events.MOVE).subscribe((data: Move) => {
       this.gameViewService.setActiveCell(null);
       const move = new Move(
         this.currentPlayer,
@@ -116,5 +124,17 @@ export class GameComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subsriptions.forEach((subscription) => subscription.unsubscribe());
+    this.gameService.restart();
+    const user = this.userService.getUser();
+    user &&
+      this.wsService.send(Events.LOBBY_LEAVE, {
+        lobbyId: this.lobbyId,
+        user: {
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
+      });
   }
 }
