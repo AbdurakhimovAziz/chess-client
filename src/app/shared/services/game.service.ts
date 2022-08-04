@@ -28,8 +28,8 @@ export class GameService {
   private gameMode: 'online' | 'local' = 'local';
   private onlinePlayerColor: Colors | null = null;
 
-  private currentPlayerSubject: BehaviorSubject<Player>;
-  public currentPlayer$: Observable<Player>;
+  private currentPlayerSubject!: BehaviorSubject<Player>;
+  public currentPlayer$!: Observable<Player>;
   private whitePlayer: Player = new Player(Colors.WHITE);
   private blackPlayer: Player = new Player(Colors.BLACK);
   private enPassantPawn: Pawn | null = null;
@@ -41,8 +41,6 @@ export class GameService {
     private wsService: WebsocketService
   ) {
     this.restart();
-    this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
-    this.currentPlayer$ = this.currentPlayerSubject.asObservable();
   }
 
   public getCurrentPlayer(): Player {
@@ -66,6 +64,12 @@ export class GameService {
     this.gameViewService.setBoard(this.board);
     this.whitePlayer.clearCapturedFigures();
     this.blackPlayer.clearCapturedFigures();
+    this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
+    this.currentPlayer$ = this.currentPlayerSubject.asObservable();
+    this.moveService.clearMoves();
+    this.changeGameMode('local');
+    this.setEnpassantPawn(null);
+    this.onlinePlayerColor = null;
   }
 
   public getBoard(): Board {

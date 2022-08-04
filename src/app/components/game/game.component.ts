@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, switchMap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Events } from 'src/app/shared/models/events';
 import { Board } from 'src/app/shared/models/game/Board';
 import { Colors } from 'src/app/shared/models/game/Colors';
@@ -49,16 +49,18 @@ export class GameComponent implements OnInit, OnDestroy {
     this.whiteKing = this.board.getKing(Colors.WHITE);
     this.blackKing = this.board.getKing(Colors.BLACK);
 
-    this.wsService.on<Move>(Events.MOVE).subscribe((data: Move) => {
-      this.gameViewService.setActiveCell(null);
-      const move = new Move(
-        this.currentPlayer,
-        this.board,
-        data.start,
-        data.end
-      );
-      this.gameService.processMove(move);
-    });
+    this.addSubscription(
+      this.wsService.on<Move>(Events.MOVE).subscribe((data: Move) => {
+        this.gameViewService.setActiveCell(null);
+        const move = new Move(
+          this.currentPlayer,
+          this.board,
+          data.start,
+          data.end
+        );
+        this.gameService.processMove(move);
+      })
+    );
 
     this.addSubscription(
       this.gameViewService.activeCell$.subscribe((cell) =>
