@@ -33,6 +33,7 @@ export class GameService {
   private whitePlayer: Player = new Player(Colors.WHITE);
   private blackPlayer: Player = new Player(Colors.BLACK);
   private enPassantPawn: Pawn | null = null;
+  private boardRotated: boolean = false;
 
   constructor(
     private moveService: MoveService,
@@ -101,11 +102,20 @@ export class GameService {
     this.gameMode = mode;
     if (mode === GameMode.ONLINE) {
       this.onlinePlayerColor = onlinePlayerColor || null;
+      onlinePlayerColor === Colors.BLACK && this.rotateBoard();
     }
   }
 
   public isGameInProgress(): boolean {
     return this.gameStatus === GameStatus.IN_PROGRESS;
+  }
+
+  public rotateBoard(): void {
+    this.boardRotated = !this.boardRotated;
+  }
+
+  public isBoardRotated(): boolean {
+    return this.boardRotated;
   }
 
   public handleMove(start: Cell | null, end: Cell): void {

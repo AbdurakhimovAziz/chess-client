@@ -1,3 +1,2 @@
-<p> {{this.getGameStatus()}} </p>
-
-<app-board [board]="board" class="board" cdkDropList [cdkDropListSortingDisabled]="true"></app-board>
+<!-- <p> {{this.getGameStatus()}} </p> -->
+<app-board [board]="board" class="board" [ngClass]="{'rotated' : this.isBoardRotated()}" cdkDropList [cdkDropListSortingDisabled]="true"></app-board>

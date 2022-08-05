@@ -19,11 +19,35 @@ body {
 }
 
 .board {
+  position: relative;
   width: calc(64px * 8);
   height: calc(64px * 8);
   display: flex;
   flex-wrap: wrap;
-  transition: all 0.5s ease-in-out;
+  transition: transform 0.8s ease-in-out;
+  border: 5px solid #fff;
+  &.rotated {
+    transform: rotate(180deg);
+    .cell {
+      transform: rotate(180deg);
+    }
+
+    .row-numbers {
+      flex-flow: column-reverse;
+      left: unset;
+      right: -30px;
+      transform: rotate(180deg);
+      animation-name: show;
+      animation-duration: 2s;
+    }
+
+    .col-letters {
+      flex-flow: row-reverse;
+      bottom: unset;
+      top: -30px;
+      transform: rotate(180deg);
+    }
+  }
 }
 
 .cell {

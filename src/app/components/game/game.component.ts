@@ -92,6 +92,10 @@ export class GameComponent implements OnInit, OnDestroy {
       this.moveService.lastMove$.subscribe((move: Move) => {
         this.gameService.swapCurrentPlayer();
 
+        if (this.gameService.getGameMode() === GameMode.LOCAL) {
+          this.gameService.rotateBoard();
+        }
+
         const figure = move.getMoveedFigure();
         if (
           figure instanceof Pawn ||
@@ -119,6 +123,10 @@ export class GameComponent implements OnInit, OnDestroy {
         this.checkGameOver();
       })
     );
+  }
+
+  public isBoardRotated(): boolean {
+    return this.gameService.isBoardRotated();
   }
 
   private checkGameOver(): void {
