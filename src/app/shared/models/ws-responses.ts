@@ -1,4 +1,5 @@
 import { Colors } from './game/Colors';
+import { GameStatus } from './game/game-status';
 import { Lobby } from './game/Lobby';
 
 export interface LobbyCreateResponse {
@@ -9,6 +10,7 @@ export interface LobbyCreateResponse {
 
 export interface LobbyJoinResponse extends LobbyLeaveResponse {
   color: Colors;
+  gameStatus: GameStatus;
 }
 
 export interface LobbyLeaveResponse {

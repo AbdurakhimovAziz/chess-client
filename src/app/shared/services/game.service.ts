@@ -9,6 +9,8 @@ import { FigureTypes } from '../models/game/figures/Figure-types';
 import { King } from '../models/game/figures/King';
 import { Pawn } from '../models/game/figures/Pawn';
 import { Rook } from '../models/game/figures/Rook';
+import { GameMode } from '../models/game/game-mode';
+import { GameStatus } from '../models/game/game-status';
 import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
 import { Point } from '../models/game/Point';
@@ -21,11 +23,9 @@ import { WebsocketService } from './websocket.service';
   providedIn: 'root',
 })
 export class GameService {
-  //TODO: add game status
-  //TODO: set players to null, instantiate only after joining the lobby
-  //TODO: add game mode. If it's online then set only one player
   private board!: Board;
-  private gameMode: 'online' | 'local' = 'local';
+  private gameMode: GameMode = GameMode.LOCAL;
+  private gameStatus!: GameStatus;
   private onlinePlayerColor: Colors | null = null;
 
   private currentPlayerSubject!: BehaviorSubject<Player>;
@@ -67,7 +67,8 @@ export class GameService {
     this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
     this.currentPlayer$ = this.currentPlayerSubject.asObservable();
     this.moveService.clearMoves();
-    this.changeGameMode('local');
+    this.gameStatus = GameStatus.WAITING;
+    this.changeGameMode(GameMode.LOCAL);
     this.setEnpassantPawn(null);
     this.onlinePlayerColor = null;
   }
@@ -84,7 +85,31 @@ export class GameService {
     }
   }
 
+  public setGameStatus(status: GameStatus): void {
+    this.gameStatus = status;
+  }
+
+  public getGameStatus(): GameStatus {
+    return this.gameStatus;
+  }
+
+  public getGameMode(): GameMode {
+    return this.gameMode;
+  }
+
+  public changeGameMode(mode: GameMode, onlinePlayerColor?: Colors): void {
+    this.gameMode = mode;
+    if (mode === GameMode.ONLINE) {
+      this.onlinePlayerColor = onlinePlayerColor || null;
+    }
+  }
+
+  public isGameInProgress(): boolean {
+    return this.gameStatus === GameStatus.IN_PROGRESS;
+  }
+
   public handleMove(start: Cell | null, end: Cell): void {
+    if (!this.isGameInProgress()) return;
     if (start && start !== end && end.isAvailable()) {
       const move = new Move(
         this.getCurrentPlayer(),
@@ -154,18 +179,8 @@ export class GameService {
     }
   }
 
-  public changeGameMode(
-    mode: 'online' | 'local',
-    onlinePlayerColor?: Colors
-  ): void {
-    this.gameMode = mode;
-    if (mode === 'online') {
-      this.onlinePlayerColor = onlinePlayerColor || null;
-    }
-  }
-
   public isRightTurn(color: Colors): boolean {
-    return this.gameMode === 'local'
+    return this.gameMode === GameMode.LOCAL
       ? color === this.getCurrentPlayer().color
       : color === this.onlinePlayerColor &&
           color === this.getCurrentPlayer().color;

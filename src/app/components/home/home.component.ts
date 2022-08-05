@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { GameMode } from 'src/app/shared/models/game/game-mode';
 import { LobbyCreateDTO } from 'src/app/shared/models/ws-requests';
 import { GameService } from 'src/app/shared/services/game.service';
 import { Events } from '../../shared/models/events';
@@ -57,7 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         .subscribe((data: LobbyCreateResponse) => {
           this.lobbies.push(data.lobby);
           const { id: lobbyId } = data.lobby;
-          this.gameService.changeGameMode('online', data.hostColor);
+          this.gameService.changeGameMode(GameMode.ONLINE, data.hostColor);
           this.router.navigate(['/game'], { queryParams: { lobbyId } });
         })
     );
@@ -66,8 +67,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.wsService
         .on<LobbyJoinResponse>(Events.LOBBY_JOIN)
         .subscribe((data: LobbyJoinResponse) => {
-          const { lobbyId, color } = data;
-          this.gameService.changeGameMode('online', color);
+          const { lobbyId, color, gameStatus } = data;
+          this.gameService.changeGameMode(GameMode.ONLINE, color);
+          this.gameService.setGameStatus(gameStatus);
           this.router.navigate(['/game'], { queryParams: { lobbyId } });
         })
     );

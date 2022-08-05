@@ -5,4 +5,5 @@ export const enum Events {
   LOBBY_LIST = 'lobby-list',
   ERROR = 'error',
   MOVE = 'move',
+  GAME_STATUS = 'game-status',
 }

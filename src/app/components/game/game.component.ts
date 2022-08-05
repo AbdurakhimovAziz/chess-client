@@ -7,6 +7,8 @@ import { Colors } from 'src/app/shared/models/game/Colors';
 import { King } from 'src/app/shared/models/game/figures/King';
 import { Pawn } from 'src/app/shared/models/game/figures/Pawn';
 import { Rook } from 'src/app/shared/models/game/figures/Rook';
+import { GameMode } from 'src/app/shared/models/game/game-mode';
+import { GameStatus } from 'src/app/shared/models/game/game-status';
 import { Move } from 'src/app/shared/models/game/Move';
 import { Player } from 'src/app/shared/models/game/Player';
 import { GameViewService } from 'src/app/shared/services/game-view.service';
@@ -49,6 +51,10 @@ export class GameComponent implements OnInit, OnDestroy {
     this.whiteKing = this.board.getKing(Colors.WHITE);
     this.blackKing = this.board.getKing(Colors.BLACK);
 
+    const gameMode = this.gameService.getGameMode();
+    gameMode === GameMode.LOCAL &&
+      this.gameService.setGameStatus(GameStatus.IN_PROGRESS);
+
     this.addSubscription(
       this.wsService.on<Move>(Events.MOVE).subscribe((data: Move) => {
         this.gameViewService.setActiveCell(null);
@@ -60,6 +66,14 @@ export class GameComponent implements OnInit, OnDestroy {
         );
         this.gameService.processMove(move);
       })
+    );
+
+    this.addSubscription(
+      this.wsService
+        .on<GameStatus>(Events.GAME_STATUS)
+        .subscribe((data: GameStatus) => {
+          this.gameService.setGameStatus(data);
+        })
     );
 
     this.addSubscription(
@@ -118,6 +132,10 @@ export class GameComponent implements OnInit, OnDestroy {
       if (king?.isInCheck) console.log('checkmate');
       else console.log('stalemate. DRAW!');
     }
+  }
+
+  public getGameStatus(): GameStatus {
+    return this.gameService.getGameStatus();
   }
 
   private addSubscription(subscription: Subscription): void {

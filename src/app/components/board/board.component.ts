@@ -28,7 +28,7 @@ export class BoardComponent {
   }
 
   public dragStarted(cell: Cell): void {
-    if (this.gameService.isRightTurn(cell.getFigure()?.color!)) {
+    if (this.gameService.isRightTurn(cell.getFigure()?.color!) && this.gameService.isGameInProgress()) {
       this.gameViewService.setIsDragging(true);
       this.gameViewService.setActiveCell(cell);
     }
