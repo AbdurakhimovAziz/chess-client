@@ -129,7 +129,7 @@ export class GameService {
       );
 
       this.processMove(move);
-      this.wsService.send('move', move);
+      this.wsService.send('move', { start: move.start, end: move.end });
       this.gameViewService.setActiveCell(null);
     } else if (!end.isEmpty() && this.isRightTurn(end.getFigure()?.color!))
       this.gameViewService.setActiveCell(end);
