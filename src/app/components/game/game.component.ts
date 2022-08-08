@@ -9,6 +9,7 @@ import { Pawn } from 'src/app/shared/models/game/figures/Pawn';
 import { Rook } from 'src/app/shared/models/game/figures/Rook';
 import { GameMode } from 'src/app/shared/models/game/game-mode';
 import { GameStatus } from 'src/app/shared/models/game/game-status';
+import { Lobby } from 'src/app/shared/models/game/Lobby';
 import { Move } from 'src/app/shared/models/game/Move';
 import { Player } from 'src/app/shared/models/game/Player';
 import { GameViewService } from 'src/app/shared/services/game-view.service';
@@ -70,9 +71,17 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.addSubscription(
       this.wsService
-        .on<GameStatus>(Events.GAME_STATUS)
-        .subscribe((data: GameStatus) => {
-          this.gameService.setGameStatus(data);
+        .on<{ gameStatus: GameStatus; lobby: Lobby }>(Events.GAME_STATUS)
+        .subscribe((data) => {
+          const { gameStatus, lobby } = data;
+          this.gameService.setGameStatus(gameStatus);
+          if (gameStatus === GameStatus.IN_PROGRESS) {
+            lobby.clients.forEach((client) => {
+              const name =
+                client.details.firstName + ' ' + client.details.lastName;
+              this.gameService.setPlayerName(client.color, name);
+            });
+          }
         })
     );
 
@@ -144,6 +153,22 @@ export class GameComponent implements OnInit, OnDestroy {
 
   public getGameStatus(): GameStatus {
     return this.gameService.getGameStatus();
+  }
+
+  public getPlayers(): [Player, Player] {
+    const color =
+      this.gameService.getGameMode() === GameMode.ONLINE
+        ? this.gameService.getOnlinePlayerColor()!
+        : Colors.WHITE;
+
+    return [
+      this.gameService.getPlayer(color),
+      this.gameService.getOpponentPlayer(color),
+    ];
+  }
+
+  public isGameStarted(): boolean {
+    return this.gameService.getGameStatus() === GameStatus.IN_PROGRESS;
   }
 
   private addSubscription(subscription: Subscription): void {

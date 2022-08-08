@@ -6,8 +6,4 @@ export interface User {
   lastName: string;
 }
 
-export type UserDetails = Pick<
-  User,
-  '_id' | 'firstName' | 'lastName' | 'email'
->;
-
+export type UserDetails = Omit<User, 'password'>;

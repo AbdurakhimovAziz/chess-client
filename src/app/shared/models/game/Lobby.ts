@@ -1,7 +1,7 @@
-import { Player } from './Player';
+import { IClient } from '../IClient';
 
 export interface Lobby {
   id: string;
   maxClients: number;
-  clients: Player[];
+  clients: IClient[];
 }

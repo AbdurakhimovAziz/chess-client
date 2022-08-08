@@ -47,8 +47,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         .on<Lobby[]>(Events.LOBBY_LIST)
         .subscribe((data: Lobby[]) => {
           this.lobbies = data;
-          console.log(this.lobbies);
-          0;
         })
     );
 
@@ -56,8 +54,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.wsService
         .on<LobbyCreateResponse>(Events.LOBBY_CREATE)
         .subscribe((data: LobbyCreateResponse) => {
-          this.lobbies.push(data.lobby);
           const { id: lobbyId } = data.lobby;
+
           this.gameService.changeGameMode(GameMode.ONLINE, data.hostColor);
           this.router.navigate(['/game'], { queryParams: { lobbyId } });
         })
@@ -67,9 +65,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.wsService
         .on<LobbyJoinResponse>(Events.LOBBY_JOIN)
         .subscribe((data: LobbyJoinResponse) => {
-          const { lobbyId, color, gameStatus } = data;
+          const { lobbyId, color } = data;
           this.gameService.changeGameMode(GameMode.ONLINE, color);
-          this.gameService.setGameStatus(gameStatus);
           this.router.navigate(['/game'], { queryParams: { lobbyId } });
         })
     );

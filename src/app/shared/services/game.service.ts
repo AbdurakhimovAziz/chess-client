@@ -52,6 +52,23 @@ export class GameService {
     this.currentPlayerSubject.next(player);
   }
 
+  public getPlayer(color: Colors): Player {
+    return color === Colors.WHITE ? this.whitePlayer : this.blackPlayer;
+  }
+
+  public getOpponentPlayer(color: Colors): Player {
+    return color === Colors.WHITE ? this.blackPlayer : this.whitePlayer;
+  }
+
+  public getOnlinePlayerColor(): Colors | null {
+    return this.onlinePlayerColor;
+  }
+
+  public setPlayerName(color: Colors, name: string): void {
+    const player = this.getPlayer(color);
+    player.setName(name);
+  }
+
   public swapCurrentPlayer(): void {
     const currentPlayer = this.getCurrentPlayer();
     this.setCurrentPlayer(
@@ -59,31 +76,8 @@ export class GameService {
     );
   }
 
-  public restart(): void {
-    this.board = new Board();
-    this.board.init();
-    this.gameViewService.setBoard(this.board);
-    this.whitePlayer.clearCapturedFigures();
-    this.blackPlayer.clearCapturedFigures();
-    this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
-    this.currentPlayer$ = this.currentPlayerSubject.asObservable();
-    this.moveService.clearMoves();
-    this.gameStatus = GameStatus.WAITING;
-    this.changeGameMode(GameMode.LOCAL);
-    this.setEnpassantPawn(null);
-    this.onlinePlayerColor = null;
-  }
-
   public getBoard(): Board {
     return this.board;
-  }
-
-  public setPlayer(player: Player): void {
-    if (player.color === Colors.WHITE) {
-      this.whitePlayer = player;
-    } else {
-      this.blackPlayer = player;
-    }
   }
 
   public setGameStatus(status: GameStatus): void {
@@ -321,5 +315,21 @@ export class GameService {
         )
       );
     });
+  }
+
+  public restart(): void {
+    this.board = new Board();
+    this.board.init();
+    this.gameViewService.setBoard(this.board);
+    this.whitePlayer = new Player(Colors.WHITE);
+    this.blackPlayer = new Player(Colors.BLACK);
+    this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
+    this.currentPlayer$ = this.currentPlayerSubject.asObservable();
+    this.moveService.clearMoves();
+    this.gameStatus = GameStatus.WAITING;
+    this.changeGameMode(GameMode.LOCAL);
+    this.setEnpassantPawn(null);
+    this.onlinePlayerColor = null;
+    this.boardRotated = false;
   }
 }

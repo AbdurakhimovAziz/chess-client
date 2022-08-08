@@ -13,6 +13,7 @@ import { GameComponent } from './game/game.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { LobbyItemComponent } from './lobby-item/lobby-item.component';
+import { PlayerComponent } from './player/player.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { LobbyItemComponent } from './lobby-item/lobby-item.component';
     HomeComponent,
     HeaderComponent,
     LobbyItemComponent,
+    PlayerComponent,
   ],
   imports: [
     CommonModule,

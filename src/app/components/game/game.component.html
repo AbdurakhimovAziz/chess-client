@@ -1,2 +1,6 @@
-<!-- <p> {{this.getGameStatus()}} </p> -->
-<app-board [board]="board" class="board" [ngClass]="{'rotated' : this.isBoardRotated()}" cdkDropList [cdkDropListSortingDisabled]="true"></app-board>
+<ng-container *ngIf="isGameStarted(); else wait">
+  <app-player [player]="getPlayers()[0]"></app-player>
+  <app-board [board]="board" class="board" [ngClass]="{'rotated' : isBoardRotated()}" cdkDropList [cdkDropListSortingDisabled]="true"></app-board>
+  <app-player [player]="getPlayers()[1]"></app-player>
+</ng-container>
+<ng-template #wait>Waiting for someone to join</ng-template>
