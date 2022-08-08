@@ -6,6 +6,7 @@ body {
   height: 100%;
   user-select: none;
   background-image: url("./assets/images/main-bg.png");
+  background-color: #6c6c6c;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -20,15 +21,16 @@ body {
 
 .board {
   position: relative;
-  width: calc(64px * 8);
-  height: calc(64px * 8);
   display: flex;
   flex-wrap: wrap;
-  transition: transform 0.8s ease-in-out;
+  width: calc(64px * 8);
+  height: calc(64px * 8);
+  background-color: $white;
   border: 5px solid #fff;
+  transition: transform 0.8s ease-in-out;
   &.rotated {
     transform: rotate(180deg);
-    .cell {
+    img {
       transform: rotate(180deg);
     }
 
@@ -55,13 +57,13 @@ body {
   height: 64px;
   @include flex-center;
   &.selected {
-    background-color: $cell-active;
+    box-shadow: inset 0px 0px 20px 3px $cell-active;
   }
   &.under-attack {
-    background-color: $cell-attack;
+    box-shadow: inset 0px 0px 20px 3px $cell-attack;
   }
   &.check {
-    background-color: $check;
+    box-shadow: inset 0px 0px 20px 3px $check;
   }
   &.hinted {
     cursor: pointer;

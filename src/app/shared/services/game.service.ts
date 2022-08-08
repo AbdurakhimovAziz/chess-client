@@ -143,9 +143,12 @@ export class GameService {
     }
 
     const targetFigure = this.performMove(this.board, start, end);
-    targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
     move.setCapturedFigure(targetFigure);
     this.moveService.addMove(move);
+    (move.player.color === Colors.WHITE
+      ? this.whitePlayer
+      : this.blackPlayer
+    ).addMove(move);
   }
 
   public performMove(board: Board, start: Cell, end: Cell): Figure | null {

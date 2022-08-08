@@ -1,7 +1,46 @@
 @use "../../shared/scss/variables" as *;
 
+:host {
+  display: contents;
+}
+
 .player {
+  flex-basis: 20%;
+  height: 50%;
   color: $white;
+  border: 2px solid $white;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem;
+  transition: all 0.3s ease-in-out;
+  &.active {
+    box-shadow: 5px 5px 10px $white, 5px -5px 10px $white, -5px -5px 10px $white,
+      -5px 5px 10px $white;
+  }
   &__name {
+    text-align: center;
+    border-bottom: 1px solid $white;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+  }
+
+  &__moves {
+    height: 85%;
+    overflow: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__moves-item {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 5px;
+    img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
   }
 }
