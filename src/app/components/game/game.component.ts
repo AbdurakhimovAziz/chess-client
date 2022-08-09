@@ -188,6 +188,9 @@ export class GameComponent implements OnInit, OnDestroy {
           email: user.email,
         },
       });
+  }
+
+  public onLeave(): void {
     this.router.navigate(['']);
   }
 

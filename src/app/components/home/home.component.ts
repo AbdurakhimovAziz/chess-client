@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -13,6 +14,7 @@ import {
 } from '../../shared/models/ws-responses';
 import { UsersService } from '../../shared/services/user.service';
 import { WebsocketService } from '../../shared/services/websocket.service';
+import { LobbyCreateDialogComponent } from './lobby-create-dialog/lobby-create-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +32,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private wsService: WebsocketService,
     private userService: UsersService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -73,16 +76,27 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public createLobby(): void {
-    const user = this.userService.getUser();
-    if (!user) return;
-    this.wsService.send<LobbyCreateDTO>(Events.LOBBY_CREATE, {
-      maxClients: 2,
-      user: {
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-      },
+    const dialogRef = this.dialog.open(LobbyCreateDialogComponent, {
+      width: '500px',
+      height: '500px',
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      console.log('The dialog was closed', data);
+      if (!data) return;
+      const user = this.userService.getUser();
+      if (!user) return;
+      this.wsService.send<LobbyCreateDTO>(Events.LOBBY_CREATE, {
+        maxClients: 2,
+        name: data.name,
+        color: data.color,
+        user: {
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
+      });
     });
   }
 

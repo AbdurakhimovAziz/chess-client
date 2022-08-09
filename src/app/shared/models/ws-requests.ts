@@ -7,6 +7,7 @@ export interface WsMessage<T> {
 }
 
 export interface LobbyCreateDTO {
+  name: string;
   maxClients: number;
   user: UserDetails;
   color?: Colors;

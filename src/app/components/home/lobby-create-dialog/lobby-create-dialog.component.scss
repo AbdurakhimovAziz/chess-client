@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.lobby-create {
+  &-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  &__field {
+    margin-bottom: 20px;
+  }
+  &__actions {
+    margin-top: auto;
+  }
+}

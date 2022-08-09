@@ -14,6 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { LobbyItemComponent } from './lobby-item/lobby-item.component';
 import { PlayerComponent } from './player/player.component';
+import { LobbyCreateDialogComponent } from './home/lobby-create-dialog/lobby-create-dialog.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { PlayerComponent } from './player/player.component';
     HeaderComponent,
     LobbyItemComponent,
     PlayerComponent,
+    LobbyCreateDialogComponent,
   ],
   imports: [
     CommonModule,
