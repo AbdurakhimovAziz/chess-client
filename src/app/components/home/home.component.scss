@@ -12,7 +12,14 @@
   height: 100%;
   padding: 50px;
   &__buttons {
-    @include flex-center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__buttons-btn {
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
   }
 }
 
@@ -40,7 +47,6 @@
 .lobbies {
   max-height: 400px;
   height: 100%;
-  overflow: auto;
   &__header {
     display: flex;
     align-items: center;
@@ -52,9 +58,11 @@
     margin-bottom: 0;
   }
   &__list {
+    height: 80%;
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow: auto;
   }
   &__text {
     margin-bottom: 0;

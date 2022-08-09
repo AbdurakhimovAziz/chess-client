@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Events } from 'src/app/shared/models/events';
 import { Board } from 'src/app/shared/models/game/Board';
@@ -40,7 +40,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private moveSimulatorService: MoveSimulatorService,
     private userService: UsersService,
     private wsService: WebsocketService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -175,9 +176,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.subsriptions.push(subscription);
   }
 
-  ngOnDestroy(): void {
-    this.subsriptions.forEach((subscription) => subscription.unsubscribe());
-    this.gameService.restart();
+  public leaveLobby(): void {
     const user = this.userService.getUser();
     user &&
       this.wsService.send(Events.LOBBY_LEAVE, {
@@ -189,5 +188,12 @@ export class GameComponent implements OnInit, OnDestroy {
           email: user.email,
         },
       });
+    this.router.navigate(['']);
+  }
+
+  ngOnDestroy(): void {
+    this.subsriptions.forEach((subscription) => subscription.unsubscribe());
+    this.gameService.restart();
+    this.leaveLobby();
   }
 }
