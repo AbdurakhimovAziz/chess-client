@@ -5,6 +5,7 @@
 }
 
 .player {
+  position: relative;
   flex-basis: 20%;
   height: 50%;
   color: $white;
@@ -16,6 +17,9 @@
   &.active {
     box-shadow: 5px 5px 10px $white, 5px -5px 10px $white, -5px -5px 10px $white,
       -5px 5px 10px $white;
+  }
+  &.winner {
+    filter: drop-shadow(0px 0px 20px #ffd600);
   }
   &__name {
     text-align: center;

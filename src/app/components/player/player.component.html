@@ -1,4 +1,4 @@
-<div class="player" [ngClass]="{'active' : isPlayersTurn()}">
+<div class="player" [ngClass]="{'active' : isPlayersTurn(), 'winner' : isWinner()}">
   <h3 class="player__name">{{player.getName()}}</h3>
   <ul class="player__moves">
     <li class="player__moves-item" *ngFor="let move of player.getMoves()">

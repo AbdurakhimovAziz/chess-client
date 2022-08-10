@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Events } from 'src/app/shared/models/events';
@@ -8,6 +9,7 @@ import { King } from 'src/app/shared/models/game/figures/King';
 import { Pawn } from 'src/app/shared/models/game/figures/Pawn';
 import { Rook } from 'src/app/shared/models/game/figures/Rook';
 import { GameMode } from 'src/app/shared/models/game/game-mode';
+import { GameResult } from 'src/app/shared/models/game/game-result';
 import { GameStatus } from 'src/app/shared/models/game/game-status';
 import { Lobby } from 'src/app/shared/models/game/Lobby';
 import { Move } from 'src/app/shared/models/game/Move';
@@ -18,6 +20,7 @@ import { MoveSimulatorService } from 'src/app/shared/services/move-simulator.ser
 import { MoveService } from 'src/app/shared/services/move.service';
 import { UsersService } from 'src/app/shared/services/user.service';
 import { WebsocketService } from 'src/app/shared/services/websocket.service';
+import { GameOverDialogComponent } from './game-over-dialog/game-over-dialog.component';
 
 @Component({
   selector: 'app-game',
@@ -41,7 +44,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private userService: UsersService,
     private wsService: WebsocketService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -147,8 +151,19 @@ export class GameComponent implements OnInit, OnDestroy {
         this.currentPlayer.color === Colors.WHITE
           ? this.whiteKing
           : this.blackKing;
-      if (king?.isInCheck) console.log('checkmate');
-      else console.log('stalemate. DRAW!');
+      if (king?.isInCheck)
+        this.gameService.setGameResult(
+          this.currentPlayer.color === Colors.WHITE
+            ? GameResult.WHITE_WON
+            : GameResult.BLACK_WON
+        );
+      else this.gameService.setGameResult(GameResult.DRAW);
+
+      this.dialog.open(GameOverDialogComponent, {
+        data: this.gameService.getGameResult(),
+        width: '300px',
+        height: '200px',
+      });
     }
   }
 
@@ -168,8 +183,12 @@ export class GameComponent implements OnInit, OnDestroy {
     ];
   }
 
-  public isGameStarted(): boolean {
-    return this.gameService.getGameStatus() === GameStatus.IN_PROGRESS;
+  public isWaiting(): boolean {
+    return this.gameService.getGameStatus() === GameStatus.WAITING;
+  }
+
+  public getGameResult(): GameResult | null {
+    return this.gameService.getGameResult();
   }
 
   private addSubscription(subscription: Subscription): void {

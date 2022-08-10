@@ -15,6 +15,7 @@ import { HeaderComponent } from './header/header.component';
 import { LobbyItemComponent } from './lobby-item/lobby-item.component';
 import { PlayerComponent } from './player/player.component';
 import { LobbyCreateDialogComponent } from './home/lobby-create-dialog/lobby-create-dialog.component';
+import { GameOverDialogComponent } from './game/game-over-dialog/game-over-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { LobbyCreateDialogComponent } from './home/lobby-create-dialog/lobby-cre
     LobbyItemComponent,
     PlayerComponent,
     LobbyCreateDialogComponent,
+    GameOverDialogComponent,
   ],
   imports: [
     CommonModule,

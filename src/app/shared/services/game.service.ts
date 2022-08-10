@@ -10,6 +10,7 @@ import { King } from '../models/game/figures/King';
 import { Pawn } from '../models/game/figures/Pawn';
 import { Rook } from '../models/game/figures/Rook';
 import { GameMode } from '../models/game/game-mode';
+import { GameResult } from '../models/game/game-result';
 import { GameStatus } from '../models/game/game-status';
 import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
@@ -34,6 +35,8 @@ export class GameService {
   private blackPlayer: Player = new Player(Colors.BLACK);
   private enPassantPawn: Pawn | null = null;
   private boardRotated: boolean = false;
+
+  private gameResult: GameResult | null = null;
 
   constructor(
     private moveService: MoveService,
@@ -90,6 +93,14 @@ export class GameService {
 
   public getGameMode(): GameMode {
     return this.gameMode;
+  }
+
+  public setGameResult(result: GameResult | null): void {
+    this.gameResult = result;
+  }
+
+  public getGameResult(): GameResult | null {
+    return this.gameResult;
   }
 
   public changeGameMode(mode: GameMode, onlinePlayerColor?: Colors): void {
@@ -335,5 +346,6 @@ export class GameService {
     this.setEnpassantPawn(null);
     this.onlinePlayerColor = null;
     this.boardRotated = false;
+    this.setGameResult(null);
   }
 }

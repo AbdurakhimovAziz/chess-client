@@ -1,4 +1,4 @@
-<ng-container *ngIf="isGameStarted(); else emptyLobby">
+<ng-container *ngIf="!isWaiting(); else emptyLobby">
   <app-player [player]="getPlayers()[0]"></app-player>
   <app-board [board]="board" class="board" [ngClass]="{'rotated' : isBoardRotated()}" cdkDropList [cdkDropListSortingDisabled]="true"></app-board>
   <app-player [player]="getPlayers()[1]"></app-player>

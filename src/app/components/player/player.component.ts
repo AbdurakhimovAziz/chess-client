@@ -15,4 +15,11 @@ export class PlayerComponent {
   public isPlayersTurn(): boolean {
     return this.gameService.getCurrentPlayer().color === this.player.color;
   }
+
+  public isWinner(): boolean {
+    return (
+      this.gameService.getGameResult() === 'draw' ||
+      this.player.color + ' won' === this.gameService.getGameResult()
+    );
+  }
 }
