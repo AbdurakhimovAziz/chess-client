@@ -80,6 +80,7 @@ export class GameComponent implements OnInit, OnDestroy {
         .subscribe((data) => {
           const { gameStatus, lobby } = data;
           this.gameService.setGameStatus(gameStatus);
+          this.gameViewService.setActiveCell(null);
           if (gameStatus === GameStatus.IN_PROGRESS) {
             lobby.clients.forEach((client) => {
               const name =
@@ -158,6 +159,7 @@ export class GameComponent implements OnInit, OnDestroy {
             : GameResult.BLACK_WON
         );
       else this.gameService.setGameResult(GameResult.DRAW);
+      this.gameService.setGameStatus(GameStatus.FINISHED);
 
       this.dialog.open(GameOverDialogComponent, {
         data: this.gameService.getGameResult(),
@@ -198,6 +200,7 @@ export class GameComponent implements OnInit, OnDestroy {
   public leaveLobby(): void {
     const user = this.userService.getUser();
     user &&
+      this.gameService.getGameMode() === GameMode.ONLINE &&
       this.wsService.send(Events.LOBBY_LEAVE, {
         lobbyId: this.lobbyId,
         user: {
@@ -215,7 +218,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subsriptions.forEach((subscription) => subscription.unsubscribe());
-    this.gameService.restart();
     this.leaveLobby();
+    this.gameService.restart();
   }
 }
