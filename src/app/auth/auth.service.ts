@@ -54,6 +54,6 @@ export class AuthService {
   }
 
   private getUrl(path: string): string {
-    return `${BASE_URL}/${this.model}/${path}`;
+    return `${BASE_URL}${this.model}/${path}`;
   }
 }

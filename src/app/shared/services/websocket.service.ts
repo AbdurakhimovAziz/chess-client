@@ -81,8 +81,6 @@ export class WebsocketService implements OnDestroy {
     this.websocketSub = this.WsMessages$.subscribe({
       error: (error: ErrorEvent) => console.error('WebSocket error!', error),
     });
-
-    // this.connect();
   }
 
   public connect() {
