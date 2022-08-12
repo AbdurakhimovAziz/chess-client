@@ -82,7 +82,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((data) => {
-      console.log('The dialog was closed', data);
       if (!data) return;
       const user = this.userService.getUser();
       if (!user) return;
