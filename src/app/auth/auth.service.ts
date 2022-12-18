@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { BASE_URL } from '../shared/constants';
 import { SigninResponse, SignupResponse } from '../shared/models/auth-response';
@@ -13,7 +14,11 @@ import { UsersService } from '../shared/services/user.service';
 export class AuthService {
   private model: string = 'auth';
 
-  constructor(private http: HttpClient, private user: UsersService) {}
+  constructor(
+    private http: HttpClient,
+    private user: UsersService,
+    private router: Router
+  ) {}
 
   public login(email: string, password: string): Observable<SigninResponse> {
     return this.http
@@ -39,7 +44,9 @@ export class AuthService {
 
   public logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.user.setUser(null);
+    this.router.navigate(['/login']);
   }
 
   private saveToken(token: string): void {

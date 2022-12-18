@@ -28,7 +28,10 @@ export class BoardComponent {
   }
 
   public dragStarted(cell: Cell): void {
-    if (this.gameService.isRightTurn(cell.getFigure()?.color!)) {
+    if (
+      this.gameService.isRightTurn(cell.getFigure()?.color!) &&
+      this.gameService.isGameInProgress()
+    ) {
       this.gameViewService.setIsDragging(true);
       this.gameViewService.setActiveCell(cell);
     }
@@ -38,9 +41,14 @@ export class BoardComponent {
     const activeCell = this.getActiveCell();
 
     if (activeCell) {
-      // TODO: recalculate if board is rotated
-      const x = Math.round(activeCell.x + event.distance.x / CELL_WIDTH);
-      const y = Math.round(activeCell.y + event.distance.y / CELL_WIDTH);
+      const rIndex = this.gameService.isBoardRotated() ? -1 : 1;
+      const x = Math.round(
+        activeCell.x + (event.distance.x * rIndex) / CELL_WIDTH
+      );
+      const y = Math.round(
+        activeCell.y + (event.distance.y * rIndex) / CELL_WIDTH
+      );
+
       if (
         (x !== activeCell.x || y !== activeCell.y) &&
         x < 8 &&

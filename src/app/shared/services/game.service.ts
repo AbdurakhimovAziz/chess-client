@@ -9,33 +9,42 @@ import { FigureTypes } from '../models/game/figures/Figure-types';
 import { King } from '../models/game/figures/King';
 import { Pawn } from '../models/game/figures/Pawn';
 import { Rook } from '../models/game/figures/Rook';
+import { GameMode } from '../models/game/game-mode';
+import { GameResult } from '../models/game/game-result';
+import { GameStatus } from '../models/game/game-status';
 import { Move } from '../models/game/Move';
 import { Player } from '../models/game/Player';
 import { Point } from '../models/game/Point';
 import { GameViewService } from './game-view.service';
 import { MoveSimulatorService } from './move-simulator.service';
 import { MoveService } from './move.service';
+import { WebsocketService } from './websocket.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
   private board!: Board;
+  private gameMode: GameMode = GameMode.LOCAL;
+  private gameStatus!: GameStatus;
+  private onlinePlayerColor: Colors | null = null;
 
-  private currentPlayerSubject: BehaviorSubject<Player>;
-  public currentPlayer$: Observable<Player>;
+  private currentPlayerSubject!: BehaviorSubject<Player>;
+  public currentPlayer$!: Observable<Player>;
   private whitePlayer: Player = new Player(Colors.WHITE);
   private blackPlayer: Player = new Player(Colors.BLACK);
   private enPassantPawn: Pawn | null = null;
+  private boardRotated: boolean = false;
+
+  private gameResult: GameResult | null = null;
 
   constructor(
     private moveService: MoveService,
     private gameViewService: GameViewService,
-    private moveSimulatorService: MoveSimulatorService
+    private moveSimulatorService: MoveSimulatorService,
+    private wsService: WebsocketService
   ) {
     this.restart();
-    this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
-    this.currentPlayer$ = this.currentPlayerSubject.asObservable();
   }
 
   public getCurrentPlayer(): Player {
@@ -46,6 +55,23 @@ export class GameService {
     this.currentPlayerSubject.next(player);
   }
 
+  public getPlayer(color: Colors): Player {
+    return color === Colors.WHITE ? this.whitePlayer : this.blackPlayer;
+  }
+
+  public getOpponentPlayer(color: Colors): Player {
+    return color === Colors.WHITE ? this.blackPlayer : this.whitePlayer;
+  }
+
+  public getOnlinePlayerColor(): Colors | null {
+    return this.onlinePlayerColor;
+  }
+
+  public setPlayerName(color: Colors, name: string): void {
+    const player = this.getPlayer(color);
+    player.setName(name);
+  }
+
   public swapCurrentPlayer(): void {
     const currentPlayer = this.getCurrentPlayer();
     this.setCurrentPlayer(
@@ -53,28 +79,71 @@ export class GameService {
     );
   }
 
-  public restart(): void {
-    this.board = new Board();
-    this.board.init();
-    this.gameViewService.setBoard(this.board);
-    this.whitePlayer.clearCapturedFigures();
-    this.blackPlayer.clearCapturedFigures();
-  }
-
   public getBoard(): Board {
     return this.board;
   }
 
+  public setGameStatus(status: GameStatus): void {
+    this.gameStatus = status;
+  }
+
+  public getGameStatus(): GameStatus {
+    return this.gameStatus;
+  }
+
+  public getGameMode(): GameMode {
+    return this.gameMode;
+  }
+
+  public setGameResult(result: GameResult | null): void {
+    this.gameResult = result;
+  }
+
+  public getGameResult(): GameResult | null {
+    return this.gameResult;
+  }
+
+  public changeGameMode(mode: GameMode, onlinePlayerColor?: Colors): void {
+    this.gameMode = mode;
+    if (mode === GameMode.ONLINE) {
+      this.onlinePlayerColor = onlinePlayerColor || null;
+      onlinePlayerColor === Colors.BLACK && this.rotateBoard();
+    }
+  }
+
+  public isGameInProgress(): boolean {
+    return this.gameStatus === GameStatus.IN_PROGRESS;
+  }
+
+  public rotateBoard(): void {
+    this.boardRotated = !this.boardRotated;
+  }
+
+  public isBoardRotated(): boolean {
+    return this.boardRotated;
+  }
+
   public handleMove(start: Cell | null, end: Cell): void {
+    if (!this.isGameInProgress()) return;
     if (start && start !== end && end.isAvailable()) {
-      this.processMove(start, end);
+      const move = new Move(
+        this.getCurrentPlayer(),
+        this.board,
+        new Point(start.x, start.y),
+        new Point(end.x, end.y)
+      );
+
+      this.processMove(move);
+      this.gameMode === GameMode.ONLINE &&
+        this.wsService.send('move', { start: move.start, end: move.end });
       this.gameViewService.setActiveCell(null);
     } else if (!end.isEmpty() && this.isRightTurn(end.getFigure()?.color!))
       this.gameViewService.setActiveCell(end);
   }
 
-  public processMove(start: Cell, end: Cell): void {
-    const move = new Move(this.getCurrentPlayer(), start, end);
+  public processMove(move: Move): void {
+    const start = this.board.getCell(move.start.x, move.start.y);
+    const end = this.board.getCell(move.end.x, move.end.y);
 
     if (this.isCastlingPossible(start, end)) {
       this.performCastling(
@@ -86,9 +155,12 @@ export class GameService {
     }
 
     const targetFigure = this.performMove(this.board, start, end);
-    targetFigure && this.getCurrentPlayer().addCapturedFigure(targetFigure);
     move.setCapturedFigure(targetFigure);
     this.moveService.addMove(move);
+    (move.player.color === Colors.WHITE
+      ? this.whitePlayer
+      : this.blackPlayer
+    ).addMove(move);
   }
 
   public performMove(board: Board, start: Cell, end: Cell): Figure | null {
@@ -127,7 +199,10 @@ export class GameService {
   }
 
   public isRightTurn(color: Colors): boolean {
-    return color === this.getCurrentPlayer().color;
+    return this.gameMode === GameMode.LOCAL
+      ? color === this.getCurrentPlayer().color
+      : color === this.onlinePlayerColor &&
+          color === this.getCurrentPlayer().color;
   }
 
   public isKingInCheck(board: Board, king: Figure | undefined): boolean {
@@ -255,5 +330,22 @@ export class GameService {
         )
       );
     });
+  }
+
+  public restart(): void {
+    this.board = new Board();
+    this.board.init();
+    this.gameViewService.setBoard(this.board);
+    this.whitePlayer = new Player(Colors.WHITE);
+    this.blackPlayer = new Player(Colors.BLACK);
+    this.currentPlayerSubject = new BehaviorSubject<Player>(this.whitePlayer);
+    this.currentPlayer$ = this.currentPlayerSubject.asObservable();
+    this.moveService.clearMoves();
+    this.gameStatus = GameStatus.WAITING;
+    this.changeGameMode(GameMode.LOCAL);
+    this.setEnpassantPawn(null);
+    this.onlinePlayerColor = null;
+    this.boardRotated = false;
+    this.setGameResult(null);
   }
 }

@@ -1,0 +1,24 @@
+.row-numbers,
+.col-letters {
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.row-numbers {
+  flex-direction: column;
+  top: 0;
+  left: -30px;
+  bottom: 0;
+}
+
+.col-letters {
+  left: 0;
+  right: 0;
+  bottom: -30px;
+}

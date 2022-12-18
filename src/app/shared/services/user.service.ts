@@ -8,10 +8,15 @@ import { User } from '../models/user';
 export class UsersService {
   private userSubject: BehaviorSubject<User | null> =
     new BehaviorSubject<User | null>(null);
-  public $user: Observable<User | null> = this.userSubject.asObservable();
+  public user$: Observable<User | null> = this.userSubject.asObservable();
+
+  constructor() {
+    const user = localStorage.getItem('user');
+    this.userSubject.next(user ? JSON.parse(user) : null);
+  }
 
   public setUser(user: User | null): void {
-    localStorage.setItem('user', JSON.stringify(user));
+    user && localStorage.setItem('user', JSON.stringify(user));
     this.userSubject.next(user);
   }
 
