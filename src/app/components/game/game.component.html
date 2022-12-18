@@ -1,1 +1,11 @@
-<app-board [board]="board" class="board" cdkDropList [cdkDropListSortingDisabled]="true"></app-board>
+<ng-container *ngIf="!isWaiting(); else emptyLobby">
+  <app-player [player]="getPlayers()[0]"></app-player>
+  <app-board [board]="board" class="board" [ngClass]="{'rotated' : isBoardRotated()}" cdkDropList [cdkDropListSortingDisabled]="true"></app-board>
+  <app-player [player]="getPlayers()[1]"></app-player>
+</ng-container>
+<ng-template #emptyLobby>
+  <div class="empty-lobby">
+    <p class="empty-lobby__text">Waiting for someone to join</p>
+    <button class="empty-btn" mat-raised-button color="warn" (click)="onLeave()">Leave</button>
+  </div>
+</ng-template>

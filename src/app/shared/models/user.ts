@@ -5,3 +5,5 @@ export interface User {
   firstName: string;
   lastName: string;
 }
+
+export type UserDetails = Omit<User, 'password'>;

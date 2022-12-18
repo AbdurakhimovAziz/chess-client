@@ -1,0 +1,21 @@
+<header class="header">
+  <a routerLink="" class="header__link">
+    <img class="header__icon" src="../../../assets/images/chess.png" alt="">
+    <h1 class="header__title">Chess</h1>
+  </a>
+
+  <div class="header__user">
+    <button mat-flat-button [matMenuTriggerFor]="profile">
+      <ng-container *ngIf="(user$ | async) as u">
+        <mat-icon>person</mat-icon>
+        {{ u.firstName + ' ' + u.lastName }}
+      </ng-container>
+    </button>
+    <mat-menu #profile="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+</header>

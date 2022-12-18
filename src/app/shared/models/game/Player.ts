@@ -1,23 +1,30 @@
 import { Colors } from './Colors';
 import { Figure } from './figures/Figure';
+import { Move } from './Move';
 
 export class Player {
+  private name: string;
   public readonly color: Colors;
-  private capturedFigures: Figure[] = [];
+  private moves: Move[] = [];
 
   constructor(color: Colors) {
     this.color = color;
+    this.name = (color === Colors.WHITE ? 'White' : 'Black') + ' player';
   }
 
-  public getCapturedFigures(): Figure[] {
-    return this.capturedFigures;
+  public setName(name: string): void {
+    this.name = name;
   }
 
-  public addCapturedFigure(figure: Figure): void {
-    this.capturedFigures.push(figure);
+  public getName(): string {
+    return this.name;
   }
 
-  public clearCapturedFigures(): void {
-    this.capturedFigures = [];
+  public getMoves(): Move[] {
+    return this.moves;
+  }
+
+  public addMove(move: Move): void {
+    this.moves.push(move);
   }
 }

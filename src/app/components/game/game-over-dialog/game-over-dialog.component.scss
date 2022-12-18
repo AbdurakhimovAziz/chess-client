@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  overflow: visible;
+}
+
+.text {
+  font-size: 1.8rem;
+  text-transform: capitalize;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  &__btn {
+    flex-basis: 40%;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: -25px;
+  right: 0;
+}

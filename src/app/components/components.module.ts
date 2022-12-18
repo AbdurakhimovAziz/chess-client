@@ -10,6 +10,12 @@ import { AppRoutingModule } from '../app-routing.module';
 import { BoardComponent } from './board/board.component';
 import { CellComponent } from './cell/cell.component';
 import { GameComponent } from './game/game.component';
+import { HomeComponent } from './home/home.component';
+import { HeaderComponent } from './header/header.component';
+import { LobbyItemComponent } from './lobby-item/lobby-item.component';
+import { PlayerComponent } from './player/player.component';
+import { LobbyCreateDialogComponent } from './home/lobby-create-dialog/lobby-create-dialog.component';
+import { GameOverDialogComponent } from './game/game-over-dialog/game-over-dialog.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +25,12 @@ import { GameComponent } from './game/game.component';
     BoardComponent,
     CellComponent,
     GameComponent,
+    HomeComponent,
+    HeaderComponent,
+    LobbyItemComponent,
+    PlayerComponent,
+    LobbyCreateDialogComponent,
+    GameOverDialogComponent,
   ],
   imports: [
     CommonModule,

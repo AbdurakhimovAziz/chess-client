@@ -1,0 +1,32 @@
+<main class="main">
+  <div class="profile card" *ngIf="user$ | async as user">
+    <div class="profile__avatar">
+      <img src="../../../assets/images/avatar.png" alt="avatar" class="profile__avatar-img">
+    </div>
+    <div class="profile__info">
+      <h1 class="profile__name">{{user.firstName}} {{user.lastName}}</h1>
+      <button class="profile__button" mat-raised-button color="accent" (click)="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="main__buttons">
+    <button class="main__buttons-btn" mat-raised-button color="warn" (click)="createLobby()">Create Lobby</button>
+    <a class="main__buttons-btn" mat-raised-button routerLink="/game">Play Offline</a>
+  </div>
+
+  <div class="main__lobbies lobbies card">
+    <header class="lobbies__header">
+      <h3 class="lobbies__title">Available games</h3>
+      <button class="lobbies__btn" mat-icon-button (click)="getAllLobbies()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </header>
+    <ul *ngIf="lobbies.length !== 0; else noLobbies" class="lobbies__list">
+      <li *ngFor="let lobby of lobbies">
+        <app-lobby-item [lobby]="lobby"></app-lobby-item>
+      </li>
+    </ul>
+  </div>
+</main>
+<ng-template #noLobbies>
+  <p class="lobbies__text">No games available. Create one!</p>
+</ng-template>

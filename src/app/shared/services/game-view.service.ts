@@ -2,7 +2,6 @@ import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
 import { Board } from '../models/game/Board';
 import { Cell } from '../models/game/Cell';
-import { GameService } from './game.service';
 import { MoveSimulatorService } from './move-simulator.service';
 
 @Injectable({

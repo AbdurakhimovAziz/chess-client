@@ -1,15 +1,24 @@
-import { Cell } from './Cell';
+import { pointToCoordinates } from '../../utils/move-translator';
+import { Board } from './Board';
 import { Figure } from './figures/Figure';
 import { Player } from './Player';
+import { Point } from './Point';
 
 export class Move {
   private movedFigure: Figure | null;
   private capturedFigure: Figure | null;
   private castlingMove: boolean = false;
+  public readonly boardCoords: string = '';
 
-  constructor(public player: Player, public start: Cell, public end: Cell) {
-    this.movedFigure = start.getFigure();
-    this.capturedFigure = end.getFigure();
+  constructor(
+    public player: Player,
+    public readonly board: Board,
+    public start: Point,
+    public end: Point
+  ) {
+    this.movedFigure = board.getFigureByPosition(start.x, start.y);
+    this.capturedFigure = board.getFigureByPosition(end.x, end.y);
+    this.boardCoords = pointToCoordinates(start, end);
   }
 
   public isCastlingMove(): boolean {
